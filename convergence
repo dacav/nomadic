@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+'''
+\x1b[1mUsage:\x1b[0m
+    {0} <bat-test> <output> <destination> [<path0> <path1> ...]
+
+\x1b[1mInformation:\x1b[0m
+    Prints B.A.T.M.A.N convergence in gnuplot format.
+    - The bat-test file is supposed to be the output of a batman session;
+    - The output file will contain the input for gnuplot;
+
+\x1b[1mNote:\x1b[0m
+    The program writes on stdout the plotting request for gnuplot. Try to
+    launch like this:
+        {0} <params> | gnuplot -persist
+
+'''
+
+import itertools
+import sys
+import batparser
+
+def suggest (outfn, paths):
+    for n, p in enumerate(paths):
+        yield '\'%s\' using %d w l title \'%s\'' % (outfn, n + 1, p)
+
+def analyze (status, outfn, destination, *paths):
+    out = open(outfn, 'wt')
+    while (status.step()):
+        entry = status.get_entry(destination)
+        for p in paths:
+            out.write(' %d' % entry.quality_of(p))
+        out.write('\n')
+    out.close()
+
+    sys.stdout.write('plot ')
+    sys.stdout.write(','.join(suggest(outfn, paths)))
+    sys.stdout.write('\n')
+
+def main (argv=None):
+    if not argv: argv = sys.argv
+
+    params = iter(argv)
+    progname = next(params)
+    if len(argv) < 4:
+        sys.stderr.write(__doc__.format(progname))
+        return 1
+
+    ifile = open(next(params))
+    analyze(batparser.Status(ifile), next(params),
+            next(params), *params)
+    ifile.close()
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())
+
