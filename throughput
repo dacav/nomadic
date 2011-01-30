@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+'''
+\x1b[1mUsage:\x1b[0m
+    {0} <output> <t0> <t1> ... <tn>
+    Where <t0>, <t1>, ... <tn> are files created by redirecting iperf's
+    standard output. You must provide at least one iperf file.
+
+\x1b[1mInformation:\x1b[0m
+    Builds a gnuplot-compatible list of throughputs basing on the input
+    files.
+
+\x1b[1mNote:\x1b[0m
+    The program writes on stdout the plotting request for gnuplot. Try to
+    launch like this:
+        {0} <params> | gnuplot -persist
+
+'''
+
+
+import sys
+import itertools
+import iperfparser
+
+def suggest (outfn, infns):
+
+    def suggest_list ():
+        for n, i in enumerate(infns):
+            yield '\'%s\' using 1:%d w l title \'%s\'' % (outfn, n + 2, i)
+
+    sys.stdout.write('plot ')
+    sys.stdout.write(','.join(suggest_list()))
+    sys.stdout.write('\n')
+
+def main (argv=None):
+    if not argv: argv = sys.argv
+
+    progname = argv.pop(0)
+    if len(argv) < 2:
+        sys.stderr.write(__doc__.format(progname))
+        return 1
+
+    outfn = argv.pop(0)
+    outfile = open(outfn, 'wt')
+
+    ipp = iperfparser.Iperf2Gnuplot(*argv)
+    for i in ipp:
+        outfile.write(i)
+        outfile.write('\n')
+
+    suggest(outfn, argv)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())
+
