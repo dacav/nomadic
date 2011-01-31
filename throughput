@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 '''
 \x1b[1mUsage:\x1b[0m
-    {0} <output> <t0> <t1> ... <tn>
-    Where <t0>, <t1>, ... <tn> are files created by redirecting iperf's
-    standard output. You must provide at least one iperf file.
+    {0} <what> <t0> <t1> ... <tn>
+
+    - <what> can be: globavg, cmpavgs
+
+    - <t0>, <t1>, ... <tn> are files created by redirecting iperf's
+      standard output. You must provide at least one iperf file.
 
 \x1b[1mInformation:\x1b[0m
     Builds a gnuplot-compatible list of throughputs basing on the input
@@ -16,21 +19,45 @@
 
 '''
 
-
 import sys
 import itertools
 import netperfparser
 import utils
+import matplotlib.pyplot as plt
 
-def suggest (outfn, infns):
+def draw_line (x0, y0, x1, y1):
+    plt.plot([x0, x1], [y0, y1])
 
-    def suggest_list ():
-        for n, i in enumerate(infns):
-            yield '\'%s\' using 1:%d w l title \'%s\'' % (outfn, n + 2, i)
+def plot_globavg (*files):
+    sumval = 0
+    count = 0
+    for f in files:
+        npp = netperfparser.NetperfParser(f)
+        xs, ys = itertools.izip(*npp)
+        plt.plot(xs, ys, 'r.')
+        sumval += npp.thr_total
+        count += 1
 
-    sys.stdout.write('plot ')
-    sys.stdout.write(','.join(suggest_list()))
-    sys.stdout.write('\n')
+    avg = float(sumval) / count
+    draw_line(0, avg, xs[-1], avg)
+    plt.show()
+
+def plot_cmpavgs (*files):
+    sumval = 0
+    count = 0
+    for fn in files:
+        f = open(fn, 'rt')
+        npp = netperfparser.NetperfParser(f)
+
+        # this both runs the algorithm and retrieves the last position in
+        # interval
+        for interval, speed in npp: pass
+        f.close()
+        sumval += npp.thr_total
+        count += 1
+
+    avg = float(sumval) / count
+    draw_line(0, avg, interval, avg)
 
 def main (argv=None):
     if not argv: argv = sys.argv
@@ -40,23 +67,23 @@ def main (argv=None):
         sys.stderr.write(__doc__.format(progname))
         return 1
 
-    outfn = argv.pop(0)
-    try:
-        outfile = utils.safe_open(outfn)
-    except IOError, msg:
-        print >>sys.stderr, str(msg)
-        return 1
-
-    files = map(lambda fn : open(fn, 'rt'), argv)
-    ipp = iperfparser.Netperf2Gnuplot(*files)
-    for i in ipp:
-        outfile.write(i)
-        outfile.write('\n')
-
+    mode = argv.pop(0)
+    if mode == 'globavg':
+        files = itertools.imap(lambda fn : open(fn, 'rt'), argv)
+        plot_globavg(*files)
+    elif mode == 'cmpavgs':
+        plot_cmpavgs(*itertools.ifilter(lambda fn : 'batman' in fn, argv))
+        plot_cmpavgs(*itertools.ifilter(lambda fn : 'olsr' in fn, argv))
+        plot_cmpavgs(*itertools.ifilter(lambda fn : 'static' in fn, argv))
+        plt.legend(('batman', 'olsr', 'static'))
+        plt.axis([0, 60, 0, 10])
+        plt.show()
+    else:
+        sys.stderr.write(__doc__.format(progname))
+        return 2
+ 
     for f in files:
         f.close()
-
-    suggest(outfn, argv)
 
     return 0
 

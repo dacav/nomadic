@@ -2,39 +2,46 @@
 
 import re
 import sys
-from itertools import islice, \
-                      imap as map, \
-                      izip_longest as izipl
+import itertools
 
 FLOAT = '\\d+\\.\\d+'
 RESULT = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
-PATTERN = re.compile(RESULT.format(FLOAT))
+ITERIM_PATTERN = re.compile(RESULT.format(FLOAT))
+THROUGHPUT_PATTERN = re.compile('^.*({0}).*$'.format(FLOAT))
 
-def NetperfParser (f):
+class NetperfParser:
 
-    def parse_row (row):
-        m = re.match(PATTERN, row)
+    def __init__ (self, f):
+        self.thr_total = 0
+        self.f = f
+
+    def parse_row (self, row):
+        m = re.match(ITERIM_PATTERN, row)
         if m:
             speed, multip, interval = m.groups()
-            return float(interval), float(speed) * (10 ** float(multip))
+            return float(interval), float(speed) # * (10 ** int(multip))
         return None
 
-    for row in f:
-        data = parse_row(row)
-        if data: yield data
+    def split_interval (self, interval, speed):
+        nsteps = int(round(interval))
+        step = interval / nsteps
+        speed /= nsteps
+        for st in xrange(nsteps):
+            yield (step, speed)
 
-def Netperf2Gnuplot (*files):
-
-    def parallelize ():
-        parsed = map(NetperfParser, files)
-        for fpars in izipl(*parsed):
-            yield tuple(map(lambda x : x[1] if x else 0, fpars))
-
-    def build_str (n, tup):
-        yield '%d' % n
-        for v in tup:
-            yield str(v)
-
-    for n, tup in enumerate(parallelize()):
-        yield ' '.join(build_str(n, tup))
+    def __iter__ (self):
+        interval_acc = 0
+        for row in self.f:
+            data = self.parse_row(row)
+            if data:
+                # Interval and speed is extracted from data
+                for i, sp in self.split_interval(*itertools.imap(float, data)):
+                    interval_acc += i
+                    yield (interval_acc, sp)
+        try:
+            self.thr_total = float(re.match(THROUGHPUT_PATTERN, row).groups()[0])
+        except AttributeError, msg:
+            sys.stderr.write(row)
+            sys.stderr.write('\n')
+            raise AttributeError(msg)
 
