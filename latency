@@ -16,10 +16,8 @@
 
 '''
 
-
 import sys
-import itertools
-import iperfparser
+import pingparser
 
 def suggest (outfn, infns):
 
@@ -43,7 +41,7 @@ def main (argv=None):
     outfile = open(outfn, 'wt')
 
     files = map(lambda fn : open(fn, 'rt'), argv)
-    ipp = iperfparser.Iperf2Gnuplot(*files)
+    ipp = pingparser.Ping2Gnuplot(*files)
     for i in ipp:
         outfile.write(i)
         outfile.write('\n')
@@ -54,6 +52,7 @@ def main (argv=None):
     suggest(outfn, argv)
 
     return 0
+
 
 if __name__ == '__main__':
     sys.exit(main())

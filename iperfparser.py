@@ -7,26 +7,21 @@ from itertools import islice, \
                       izip_longest as izipl
 
 FLOAT = '\\d+\\.\\d+'
-PATTERN = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
+RESULT = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
+PATTERN = re.compile(RESULT.format(FLOAT))
 
-def IperfParser (fn):
+def IperfParser (f):
 
-    pat = re.compile(PATTERN.format(FLOAT))
     def parse_row (row):
-        m = re.match(pat, row)
+        m = re.match(PATTERN, row)
         if m:
             speed, multip, interval = m.groups()
             return float(interval), float(speed) * (10 ** float(multip))
         return None
 
-    try:
-        f = open(fn, 'rt')
-        for row in f:
-            data = parse_row(row)
-            if data: yield data
-        f.close()
-    except IOError, msg:
-        print >>sys.stderr, "Warning: Skip %s: %s" % (fn, str(msg))
+    for row in f:
+        data = parse_row(row)
+        if data: yield data
 
 def Iperf2Gnuplot (*files):
 
