@@ -10,7 +10,7 @@ FLOAT = '\\d+\\.\\d+'
 RESULT = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
 PATTERN = re.compile(RESULT.format(FLOAT))
 
-def IperfParser (f):
+def NetperfParser (f):
 
     def parse_row (row):
         m = re.match(PATTERN, row)
@@ -23,10 +23,10 @@ def IperfParser (f):
         data = parse_row(row)
         if data: yield data
 
-def Iperf2Gnuplot (*files):
+def Netperf2Gnuplot (*files):
 
     def parallelize ():
-        parsed = map(IperfParser, files)
+        parsed = map(NetperfParser, files)
         for fpars in izipl(*parsed):
             yield tuple(map(lambda x : x[1] if x else 0, fpars))
 

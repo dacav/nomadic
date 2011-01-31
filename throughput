@@ -19,7 +19,7 @@
 
 import sys
 import itertools
-import iperfparser
+import netperfparser
 import utils
 
 def suggest (outfn, infns):
@@ -48,7 +48,7 @@ def main (argv=None):
         return 1
 
     files = map(lambda fn : open(fn, 'rt'), argv)
-    ipp = iperfparser.Iperf2Gnuplot(*files)
+    ipp = iperfparser.Netperf2Gnuplot(*files)
     for i in ipp:
         outfile.write(i)
         outfile.write('\n')
