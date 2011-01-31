@@ -19,16 +19,10 @@
 
 import sys
 import pingparser
+import utils
 
-def suggest (outfn, infns):
-
-    def suggest_list ():
-        for n, i in enumerate(infns):
-            yield '\'%s\' using 1:%d w l title \'%s\'' % (outfn, n + 2, i)
-
-    sys.stdout.write('plot ')
-    sys.stdout.write(','.join(suggest_list()))
-    sys.stdout.write('\n')
+from itertools import izip as zip, \
+                      count
 
 def main (argv=None):
     if not argv: argv = sys.argv
@@ -50,7 +44,7 @@ def main (argv=None):
     for f in files:
         f.close()
 
-    suggest(outfn, argv)
+    utils.suggest(sys.stdout, outfn, 1, *zip(argv, count(2)))
 
     return 0
 

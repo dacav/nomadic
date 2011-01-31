@@ -15,13 +15,11 @@
 
 '''
 
-import itertools
+from itertools import izip as zip, \
+                      count
 import sys
 import batparser
-
-def suggest (outfn, paths):
-    for n, p in enumerate(paths):
-        yield '\'%s\' using %d w l title \'%s\'' % (outfn, n + 1, p)
+import utils
 
 def analyze (status, outfn, destination, *paths):
     out = open(outfn, 'wt')
@@ -31,10 +29,7 @@ def analyze (status, outfn, destination, *paths):
             out.write(' %d' % entry.quality_of(p))
         out.write('\n')
     out.close()
-
-    sys.stdout.write('plot ')
-    sys.stdout.write(','.join(suggest(outfn, paths)))
-    sys.stdout.write('\n')
+    return paths
 
 def main (argv=None):
     if not argv: argv = sys.argv
@@ -46,9 +41,11 @@ def main (argv=None):
         return 1
 
     ifile = open(next(params))
-    analyze(batparser.Status(ifile), next(params),
-            next(params), *params)
+    outfn = next(params)
+    paths = analyze(batparser.Status(ifile), outfn, next(params), *params)
     ifile.close()
+
+    utils.suggest(sys.stdout, outfn, None, *zip(paths, count(1)))
 
     return 0
 
