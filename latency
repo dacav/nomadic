@@ -2,8 +2,9 @@
 '''
 \x1b[1mUsage:\x1b[0m
     {0} <output> <t0> <t1> ... <tn>
-    Where <t0>, <t1>, ... <tn> are files created by redirecting iperf's
-    standard output. You must provide at least one iperf file.
+    Where <t0>, <t1>, ... <tn> are latency files (the trivial standard
+    output of the 'ping' program redirected on a file). You must provide
+    at least one latency file.
 
 \x1b[1mInformation:\x1b[0m
     Builds a gnuplot-compatible list of throughputs basing on the input
