@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import os.path
+
 def suggest (outstream, gnuplot_filename, xcol, *columns):
     '''
     Print 'suggested' gnuplot command.
@@ -24,3 +26,8 @@ def suggest (outstream, gnuplot_filename, xcol, *columns):
     outstream.write(','.join(suggest_list()))
     outstream.write('\n')
 
+def safe_open (filename):
+    if os.path.exists(filename):
+        raise IOError('"%s" exists. Cowardly refusing to overwrite it' \
+                      % filename)
+    return open(filename, 'wt')

@@ -20,6 +20,7 @@
 import sys
 import itertools
 import iperfparser
+import utils
 
 def suggest (outfn, infns):
 
@@ -40,7 +41,11 @@ def main (argv=None):
         return 1
 
     outfn = argv.pop(0)
-    outfile = open(outfn, 'wt')
+    try:
+        outfile = utils.safe_open(outfn)
+    except IOError, msg:
+        print >>sys.stderr, str(msg)
+        return 1
 
     files = map(lambda fn : open(fn, 'rt'), argv)
     ipp = iperfparser.Iperf2Gnuplot(*files)

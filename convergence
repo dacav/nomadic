@@ -22,7 +22,7 @@ import batparser
 import utils
 
 def analyze (status, outfn, destination, *paths):
-    out = open(outfn, 'wt')
+    out = utils.safe_open(outfn)
     while (status.step()):
         entry = status.get_entry(destination)
         for p in paths:
@@ -42,7 +42,13 @@ def main (argv=None):
 
     ifile = open(next(params))
     outfn = next(params)
-    paths = analyze(batparser.Status(ifile), outfn, next(params), *params)
+    try:
+        paths = analyze(batparser.Status(ifile), outfn, next(params),
+                        *params)
+    except IOError, msg:
+        print >>sys.stderr, str(msg)
+        return 1
+
     ifile.close()
 
     utils.suggest(sys.stdout, outfn, None, *zip(paths, count(1)))
