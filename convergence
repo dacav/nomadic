@@ -40,11 +40,12 @@ def main (argv=None):
         sys.stderr.write(__doc__.format(progname))
         return 1
 
-    ifile = open(next(params))
+    ifilename = next(params)
+    ifile = open(ifilename)
     outfn = next(params)
     try:
-        paths = analyze(batparser.Status(ifile), outfn, next(params),
-                        *params)
+        paths = analyze(batparser.Status(ifilename, ifile), outfn,
+                        next(params), *params)
     except IOError, msg:
         print >>sys.stderr, str(msg)
         return 1

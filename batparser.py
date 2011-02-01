@@ -6,8 +6,8 @@ from itertools import imap as map
 MATCH_HOST = r'(\d+\.\d+\.\d+\.\d+)'
 MATCH_HOST_SCORE = MATCH_HOST + r'\s*\(\s*(\d+)\)'
 
-ROW_PATTERN = re.compile(r'^\s*%s\s+%s:\s*(.*)\s*$' % \
-                         (MATCH_HOST, MATCH_HOST_SCORE))
+ROW_PATTERN = re.compile(r'%s\s+%s[^:]*:\s*(.*)\s*$' % \
+                         (MATCH_HOST_SCORE, MATCH_HOST))
 TAIL_PATTERN = re.compile(r'^%s\s*(.*)$' % MATCH_HOST_SCORE)
 
 class Host (object) :
@@ -49,12 +49,10 @@ class Status :
 
     class ParseError (Exception): pass
 
-    def __init__ (self, stream):
+    def __init__ (self, filename, stream):
         self.nodes = dict()
         self.stream = enumerate(map(lambda x : x.strip(), stream))
-        nr, row = next(self.stream)
-        if not Status.is_update(row):
-            raise Status.ParseError('Invalid input file format')
+        self.filename = filename
 
     @staticmethod
     def parse_line (line):
@@ -68,12 +66,29 @@ class Status :
 
         m = re.match(ROW_PATTERN, line)
         if m:
-            dest, gateway, score, alt = m.groups()
-            return dest, Host(gateway, int(score)), parse_tail(alt)
+            dest, score, gateway, alt = m.groups()
+            return dest, Host(gateway, score), parse_tail(alt)
 
     @staticmethod
-    def is_update (row):
-        return row.startswith('\x1b[H\x1b[2J')
+    def data_begin (row):
+        return row.startswith('BOD')
+        #return row.startswith('\x1b[H\x1b[2J')
+
+    @staticmethod
+    def data_end (row):
+        return row.startswith('EOD')
+
+    @staticmethod
+    def startup (row):
+        return "No batman nodes" in row
+
+    @staticmethod
+    def header (row):
+        return 'Originator' in row
+
+    @staticmethod
+    def file_end (row):
+        return row.startswith('Interface activated:')
 
     def get_entry (self, hostname):
         ret = self.nodes.get(hostname)
@@ -82,13 +97,31 @@ class Status :
         return ret
 
     def step (self):
-        eof = True
+        # First line of each step (if any)
+        try:
+            nr, row = next(self.stream)
+            if Status.file_end(row):
+                return False
+            elif not Status.data_begin(row):
+                raise Status.ParseError('%s not starting on BOD (line %d)' \
+                                        % (self.filename, nr))
+        except StopIteration:
+            raise Status.ParseError('%s broken starting step (line %d)' \
+                                    % (self.filename, nr))
+
+        eof = False
         for nr, row in self.stream:
-            if Status.is_update(row):
+            if Status.header(row) or Status.startup(row):
+                continue
+            elif Status.data_end(row):
                 break
-            dest, gw, alt = Status.parse_line(row)
-            self.get_entry(dest).update(gw, alt)
-            eof = False
+            else:
+                try:
+                    dest, gw, alt = Status.parse_line(row)
+                except TypeError:
+                    raise Status.ParseError('%s, parsing "%s" (%d)' %
+                                            (self.filename, row, nr))
+                self.get_entry(dest).update(gw, alt)
 
         return not eof
 
