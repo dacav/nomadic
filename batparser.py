@@ -1,94 +1,70 @@
 #!/usr/bin/env python
 
 import re
-from itertools import imap as map
+from itertools import imap as map, izip as zip
 
 MATCH_HOST = r'(\d+\.\d+\.\d+\.\d+)'
-MATCH_HOST_SCORE = MATCH_HOST + r'\s*\(\s*(\d+)\)'
+MATCH_SCORE = r'\(\s*(\d+)\)'
 
-ROW_PATTERN = re.compile(r'%s\s+%s[^:]*:\s*(.*)\s*$' % \
-                         (MATCH_HOST_SCORE, MATCH_HOST))
-TAIL_PATTERN = re.compile(r'^%s\s*(.*)$' % MATCH_HOST_SCORE)
+ROW_PATTERN = re.compile(r'%s\s+%s\s+%s.*$' % \
+                         (MATCH_HOST, MATCH_SCORE, MATCH_HOST))
+TIMESTAMP_PATTERN = re.compile(r'\s+Origi.*UT: \d+d\s+\d+h\s+(\d+)m.*$')
 
-class Host (object) :
+def parse_line (line):
+    m = re.match(ROW_PATTERN, line)
+    if m:
+        dest, score, gateway = m.groups()
+        return dest, gateway, int(score)
+    return None
 
-    def __init__ (self, host, score=None):
-        self.host = host
-        self.score = score
-
-    def __hash__ (self):
-        return hash(self.host)
-
-    def __cmp__ (self, x):
-        return cmp(self.host, x.host)
-
-    def __str__ (self):
-        if self.score:
-            return 'Host "%s" (%d)' % (self.host, self.score)
-        return 'Host "%s"' % self.host
-
-class TargetHost (Host) :
-
-    def __init__ (self, host):
-        super(TargetHost, self).__init__(host)
-        self.gateway = None
-        self.gwscore = 0
-        self.alt = dict()
-
-    def update (self, gw, alt):
-        self.gateway = gw
-        self.alt.update(((x.host, x) for x in alt))
-
-    def quality_of (self, x):
-        agw = self.alt.get(x)
-        if not agw:
-            return 0
-        return agw.score or 0
+def data_begin (row): return 'BOD' in row
+def file_end (row): return row.startswith('Interface activated:')
 
 class Status :
 
     class ParseError (Exception): pass
 
-    def __init__ (self, filename, stream):
-        self.nodes = dict()
-        self.stream = enumerate(map(lambda x : x.strip(), stream))
+    def __init__ (self, filename, exec_time):
         self.filename = filename
+        self.file = open(filename)
+        self.exec_time = int(exec_time)
+        self.stream = enumerate(map(lambda x : x.strip(), self.file))
 
-    @staticmethod
-    def parse_line (line):
+    def __del__ (self):
+        self.file.close()
 
-        def parse_tail (tail):
-            subm = re.match(TAIL_PATTERN, tail)
-            while subm:
-                ip, score, tail = subm.groups()
-                yield Host(ip, int(score))
-                subm = re.match(TAIL_PATTERN, tail)
+    def timestamps (self):
+        fs = open(self.filename)
 
-        m = re.match(ROW_PATTERN, line)
-        if m:
-            dest, score, gateway, alt = m.groups()
-            return dest, Host(gateway, score), parse_tail(alt)
+        def build_minute ():
+            cur_min = 0
+            steps_per_min = 0
+            for nr, row in enumerate(fs):
+                m = re.match(TIMESTAMP_PATTERN, row)
+                if not m: continue
+                minute = int(m.groups()[0])
+                if minute > cur_min:
+                    cur_min = minute
+                    yield steps_per_min
+                    steps_per_min = 0
+                else:
+                    steps_per_min += 1
+            yield steps_per_min
 
-    @staticmethod
-    def data_begin (row):
-        return row.startswith('BOD')
-        #return row.startswith('\x1b[H\x1b[2J')
+        nmins = self.exec_time / 60
+        crumbs = self.exec_time % 60
 
-    @staticmethod
-    def data_end (row):
-        return row.startswith('EOD')
+        # First instant (in which we shouldn't have a route yet)
+        yield 0
 
-    @staticmethod
-    def startup (row):
-        return "No batman nodes" in row
+        acc = 0
+        for m, steps in enumerate(build_minute()):
+            minlen = float(60 if m < nmins else crumbs)
+            for i in xrange(1, steps + 1):
+                yield acc + i * minlen / steps
+            acc += minlen
 
-    @staticmethod
-    def header (row):
-        return 'Originator' in row
-
-    @staticmethod
-    def file_end (row):
-        return row.startswith('Interface activated:')
+        fs.close()
 
     def get_entry (self, hostname):
         ret = self.nodes.get(hostname)
@@ -96,35 +72,29 @@ class Status :
             ret = self.nodes[hostname] = TargetHost(hostname)
         return ret
 
-    def step (self):
+    def iter_nexthop (self, target):
         # First line of each step (if any)
         try:
             nr, row = next(self.stream)
-            if Status.file_end(row):
-                return False
-            elif not Status.data_begin(row):
+            if file_end(row):
+                raise StopIteration()
+            elif not data_begin(row):
                 raise Status.ParseError('%s not starting on BOD (line %d)' \
                                         % (self.filename, nr))
         except StopIteration:
             raise Status.ParseError('%s broken starting step (line %d)' \
                                     % (self.filename, nr))
 
-        eof = False
+        # First instant (in which we shouldn't have a route yet)
+        yield 'none' #, 0
         for nr, row in self.stream:
-            if Status.header(row) or Status.startup(row):
+            data = parse_line(row)
+            if not data:
                 continue
-            elif Status.data_end(row):
-                break
-            else:
-                try:
-                    dest, gw, alt = Status.parse_line(row)
-                except TypeError:
-                    raise Status.ParseError('%s, parsing "%s" (%d)' %
-                                            (self.filename, row, nr))
-                self.get_entry(dest).update(gw, alt)
+            dest, gw, score = data
+            if dest == target:
+                yield gw #, score
 
-        return not eof
-
-    def __iter__ (self):
-        return self.nodes.iteritems()
+    def iter_nexthop_ts (self, target):
+        return zip(self.timestamps(), self.iter_nexthop(target))
 
