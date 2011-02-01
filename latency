@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
 \x1b[1mUsage:\x1b[0m
-    {0} <output> <t0> <t1> ... <tn>
+    {0} <t0> <t1> ... <tn>
     Where <t0>, <t1>, ... <tn> are latency files (the trivial standard
     output of the 'ping' program redirected on a file). You must provide
     at least one latency file.
@@ -22,33 +22,32 @@ import pingparser
 import utils
 
 from itertools import izip as zip, \
-                      count
+                      count, islice
+def build_data (*files):
+    for fn, f in files:
+        times = list(pingparser.PingParser(f))
+        avg = utils.average(times)
+        yield fn, avg, utils.variance(times, avg), \
+              utils.quartiles(times), min(times), max(times)
 
 def main (argv=None):
     if not argv: argv = sys.argv
 
     progname = argv.pop(0)
-    if len(argv) < 2:
+    if len(argv) < 1:
         sys.stderr.write(__doc__.format(progname))
         return 1
 
-    outfn = argv.pop(0)
-    try:
-        outfile = utils.safe_open(outfn)
-    except IOError, msg:
-        print >>sys.stderr, str(msg)
-        return 1
+    files = map(lambda fn : (fn, open(fn, 'rt')), argv)
+    for fn, avg, var, quarts, vmin, vmax in build_data(*files):
+        print 'File:', fn
+        print 'Average:', avg
+        print 'Variance:', var
+        print 'Quarts:', quarts
+        print 'Min:', vmin
+        print 'Max:', vmax
 
-    files = map(lambda fn : open(fn, 'rt'), argv)
-    ipp = pingparser.Ping2Gnuplot(*files)
-    for i in ipp:
-        outfile.write(i)
-        outfile.write('\n')
-
-    for f in files:
-        f.close()
-
-    utils.suggest(sys.stdout, outfn, 1, *zip(argv, count(2)))
+    for f in files: f[1].close()
 
     return 0
 

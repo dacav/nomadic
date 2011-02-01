@@ -31,3 +31,27 @@ def safe_open (filename):
         raise IOError('"%s" exists. Cowardly refusing to overwrite it' \
                       % filename)
     return open(filename, 'wt')
+
+def average (seq):
+    return sum(seq, 0.0) / len(seq)
+
+def variance (seq, avg=None):
+    if avg == None:
+        avg = average(seq)
+    return average(list((x - avg)**2 for x in seq))
+
+def quartiles (seq):
+
+    def aux (sub):
+        half = len(sub) / 2
+        if len(sub) % 2:
+            return sub[half]
+        else:
+            return float(sub[half - 1] + sub[half]) / 2
+
+    seq.sort()
+    m0 = len(seq) / 2
+    if len(seq) % 2:
+        return aux(seq[:m0]), seq[m0], aux(seq[m0 + 1:])
+    else:
+        return aux(seq[:m0 - 1]), seq[m0 - 1], aux(seq[m0:])
