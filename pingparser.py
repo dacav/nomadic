@@ -6,7 +6,7 @@ from itertools import imap as map, \
                       izip as zip
 
 FLOAT = '\\d+\\.\\d+'
-PATTERN = re.compile('^.*({0}).*$'.format(FLOAT))
+PATTERN = re.compile('^.*time=({0}).*$'.format(FLOAT))
 
 def PingParser (f):
     for row in f:
