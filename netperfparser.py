@@ -19,12 +19,13 @@ BY_THROUGHPUT, BY_TRANSACTIONS = xrange(2)
 
 class NetperfParser:
 
-    def __init__ (self, fn, interp=BY_THROUGHPUT):
+    def __init__ (self, fn, time_offset=0, interp=BY_THROUGHPUT):
         self.thr_total = 0
         self.f = open(fn)
         self.filename = fn
         pat = THROUG if interp == BY_THROUGHPUT else TRANS
         self.iterrim_pat = re.compile(pat.format(FLOAT))
+        self.time_offset = time_offset
 
     def __del__ (self):
         self.f.close()
@@ -44,7 +45,7 @@ class NetperfParser:
             yield (step, speed)
 
     def __iter__ (self):
-        interval_acc = 0
+        interval_acc = self.time_offset
         for nr, row in enumerate(self.f, 1):
             data = self.parse_row(row)
             if data:
