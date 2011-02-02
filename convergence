@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 class Flow:
 
-    identifier = {'10.0.0.66' : (20, 'g-'), '10.0.0.68' : (20, 'b-')}
+    identifier = {'10.0.0.66' : (20, 'g-'), '10.0.0.68' : (20, 'r-')}
 
     def __init__ (self):
         self.time = 0
@@ -37,8 +37,7 @@ def plot_convergence (meshprot, perf):
         f.update(t, gw)
 
     time, val = (list(x) for x in zip(*perf))
-    plt.plot(time, val, "r-")
-    plt.axis([0, 70, 0, 21])
+    plt.plot(time, val, "b-")
     plt.show()
 
 def main (argv=None):
@@ -61,18 +60,17 @@ def main (argv=None):
         return 1
 
     mesh_data = None
-    if batman_mesh: 
+    if batman_mesh:
         print ("Using batman mesh")
         parser = batparser.BatParser(args[0], 70)
         mesh_data = parser.iter_nexthop_ts("10.0.0.67")
-    else: 
+    else:
         print("Using olsr mesh")
         parser = olsrparser.OlsrParser(args[0])
         mesh_data = parser.parse("10.0.0.67")
-        
-    
 
-    perf_data = netperfparser.NetperfParser(args[1], netperfparser.BY_TRANSACTIONS)
+    perf_data = netperfparser.NetperfParser(args[1],
+                                            netperfparser.BY_TRANSACTIONS)
     plot_convergence(mesh_data, perf_data)
     return 0
 
