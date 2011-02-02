@@ -55,10 +55,13 @@ class NetperfParser:
 
     def transaction_intervals (self, interval, trans):
         nsteps = int(round(interval))
-        step = interval / nsteps
-        for st in xrange(nsteps):
-            yield (step, 0)
-        yield (interval % nsteps, trans)
+        if nsteps == 1:
+            yield interval, trans
+        else:
+            step = interval / nsteps
+            for st in xrange(1, nsteps):
+                yield (step, 0)
+            yield (interval % nsteps, trans)
 
     def __iter__ (self):
         interval_acc = self.time_offset
@@ -71,9 +74,9 @@ class NetperfParser:
                     yield (interval_acc, sp)
             elif 'Local /Remote' in row:
                 raise StopIteration()
-            else:
-                warnings.warn('Skipping row {0} of file {1}'
-                              .format(nr, self.filename))
+#            else:
+#                warnings.warn('Skipping row {0} of file {1}'
+#                              .format(nr, self.filename))
 
         self.thr_total = \
                 float(re.match(THROUGHPUT_PATTERN, row).groups()[0])

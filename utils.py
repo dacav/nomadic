@@ -41,7 +41,6 @@ def variance (seq, avg=None):
     return average(list((x - avg)**2 for x in seq))
 
 def quartiles (seq):
-
     def aux (sub):
         half = len(sub) / 2
         if len(sub) % 2:
@@ -49,7 +48,10 @@ def quartiles (seq):
         else:
             return float(sub[half - 1] + sub[half]) / 2
 
+    if len(seq) == 1: return seq[0], seq[0], seq[0]
+
     seq.sort()
+
     m0 = len(seq) / 2
     if len(seq) % 2:
         return aux(seq[:m0]), seq[m0], aux(seq[m0 + 1:])
