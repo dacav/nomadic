@@ -13,7 +13,7 @@ THROUG = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
 # Regex for netperf's transactions
 TRANS = r'^Interim result:\s*({0}) Trans/s over ({0}) seconds'
 
-THROUGHPUT_PATTERN = re.compile('^.*({0}).*$'.format(FLOAT))
+THROUGHPUT_PATTERN = re.compile('^.*({0}) *$'.format(FLOAT))
 
 BY_THROUGHPUT, BY_TRANSACTIONS = xrange(2)
 
