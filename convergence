@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 class Flow:
 
-    identifier = {'10.0.0.66' : (15, 'r-'), '10.0.0.68' : (20, 'b-')}
+    identifier = {'10.0.0.66' : (20, 'g-'), '10.0.0.68' : (20, 'b-')}
 
     def __init__ (self):
         self.time = 0
@@ -37,35 +37,44 @@ def plot_convergence (meshprot, perf):
     for t, gw in meshprot:
         f.update(t, gw)
 
-    print '>>>', ' '.join((str(x) for x in perf))
-
-def main (argv=None):
-    if not argv: argv = sys.argv
-
-    progname = argv.pop(0)
-    if len(argv) < 4:
-        print __doc__ % progname
-        return 1
-
-    argv = iter(argv)
-
-    batman = next(argv)
-    bat_through = next(argv)
-
-    olsr = next(argv)
-    olsr_though = next(argv)
-
-    flow = Flow()
-
-    batp = batparser.BatParser(batman, 70)
-    batperf = netperfparser.NetperfParser(bat_through)
-    plot_convergence(batp.iter_nexthop_ts('10.0.0.67'), batperf)
-
+    time, val = (list(x) for x in zip(*perf))
+    plt.plot(time, val, "r-")
     plt.axis([0, 70, 0, 21])
     plt.show()
 
-#    olsrp = olsrparser.OlsrParser(olsr)
-#    oslrperf = netperfparser.NetperfParser(olsr_though)
+def main (argv=None):
+    import getopt
+
+    batman_mesh = None
+
+    opts, args = getopt.getopt(sys.argv[1:], "t:")
+    for (o, v) in opts:
+        if o == "-t":
+            if int(v) == 0: batman_mesh = True
+            else: batman_mesh = False
+
+    if batman_mesh == None:
+        print("Specify type of mesh -t 0/1")
+        return 1
+
+    if len(args) < 2:
+        print("Specify log files")
+        return 1
+
+    mesh_data = None
+    if batman_mesh: 
+        print ("Using batman mesh")
+        parser = batparser.BatParser(args[0], 70)
+        mesh_data = parser.iter_nexthop_ts("10.0.0.67")
+    else: 
+        print("Using olsr mesh")
+        parser = olsrparser.OlsrParser(olsr)
+        mesh_data = parser.parse("10.0.0.67")
+        
+    
+
+    perf_data = netperfparser.NetperfParser(args[2], netperfparser.BY_TRANSACTIONS)
+    plot_convergence(mesh_data, perf_data)
 
     return 0
 
