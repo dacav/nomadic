@@ -23,6 +23,15 @@ class NetperfParser:
         self.thr_total = 0
         self.f = open(fn)
         self.filename = fn
+        if interp == BY_THROUGHPUT:
+            pat = THROUG
+            self.intervals = self.thoughput_intervals
+        elif interp == BY_TRANSACTIONS:
+            pat = TRANS
+            self.intervals = self.transaction_intervals
+        else:
+            raise SystemExit('You are kidding me, right?')
+
         pat = THROUG if interp == BY_THROUGHPUT else TRANS
         self.iterrim_pat = re.compile(pat.format(FLOAT))
         self.time_offset = time_offset
@@ -37,12 +46,19 @@ class NetperfParser:
             return float(interval), float(speed) # * (10 ** int(multip))
         return None
 
-    def intervals (self, interval, speed):
+    def thoughput_intervals (self, interval, speed):
         nsteps = int(round(interval))
         step = interval / nsteps
         speed /= nsteps
         for st in xrange(nsteps):
             yield (step, speed)
+
+    def transaction_intervals (self, interval, trans):
+        nsteps = int(round(interval))
+        step = interval / nsteps
+        for st in xrange(nsteps):
+            yield (step, 0)
+        yield (interval % nsteps, trans)
 
     def __iter__ (self):
         interval_acc = self.time_offset
