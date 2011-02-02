@@ -46,6 +46,7 @@ def macina(parse, target, filelst, infl, supl):
     pointsdict = {}
     for path in filelst:
         data = parse(path)
+        print data
         points = extract_point(data, target)
         points = filter(lambda x: x > infl, points)
         print path, points
