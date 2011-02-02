@@ -2,6 +2,9 @@
 '''
 \x1b[1mUsage:\x1b[0m
     {0} -t [0|1] <mesh log> <netperf log>
+
+    0 = batman
+    1 = olsr
 '''
 
 #\x1b[1mNote:\x1b[0m
@@ -53,10 +56,12 @@ def main (argv=None):
 
     if batman_mesh == None:
         print("Specify type of mesh -t 0/1")
+        print __doc__.format(sys.argv[0])
         return 1
 
     if len(args) < 2:
         print("Specify log files")
+        print __doc__.format(sys.argv[0])
         return 1
 
     mesh_data = None
@@ -69,7 +74,7 @@ def main (argv=None):
         parser = olsrparser.OlsrParser(args[0])
         mesh_data = parser.parse("10.0.0.67")
 
-    perf_data = netperfparser.NetperfParser(args[1],
+    perf_data = netperfparser.NetperfParser(args[1], 10,
                                             netperfparser.BY_TRANSACTIONS)
     plot_convergence(mesh_data, perf_data)
     return 0
