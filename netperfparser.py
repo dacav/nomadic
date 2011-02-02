@@ -3,6 +3,7 @@
 import re
 import sys
 import itertools
+import warnings
 
 FLOAT = '\\d+\\.\\d+'
 
@@ -21,6 +22,7 @@ class NetperfParser:
     def __init__ (self, fn, interp=BY_THROUGHPUT):
         self.thr_total = 0
         self.f = open(fn)
+        self.filename = fn
         pat = THROUG if interp == BY_THROUGHPUT else TRANS
         self.iterrim_pat = re.compile(pat.format(FLOAT))
 
@@ -43,7 +45,7 @@ class NetperfParser:
 
     def __iter__ (self):
         interval_acc = 0
-        for row in self.f:
+        for nr, row in enumerate(self.f, 1):
             data = self.parse_row(row)
             if data:
                 # Interval and speed is extracted from data
@@ -52,6 +54,10 @@ class NetperfParser:
                     yield (interval_acc, sp)
             elif 'Local /Remote' in row:
                 raise StopIteration()
+            else:
+                warnings.warn('Skipping row {0} of file {1}'
+                              .format(nr, self.filename))
+
         self.thr_total = \
                 float(re.match(THROUGHPUT_PATTERN, row).groups()[0])
 
