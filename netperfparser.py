@@ -5,25 +5,32 @@ import sys
 import itertools
 
 FLOAT = '\\d+\\.\\d+'
-RESULT = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
-#RESULT = r'^Interim result:\s*({0})\s.*(\d+)bits/s over ({0}) seconds'
-ITERIM_PATTERN = re.compile(RESULT.format(FLOAT))
+
+# Regex for netperf's throughput
+THROUG = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
+
+# Regex for netperf's transactions
+TRANS = r'^Interim result:\s*({0}) Trans/s over ({0}) seconds'
+
 THROUGHPUT_PATTERN = re.compile('^.*({0}).*$'.format(FLOAT))
 
+BY_THROUGHPUT, BY_TRANSACTIONS = xrange(2)
 
 class NetperfParser:
 
-    def __init__ (self, fn):
+    def __init__ (self, fn, interp=BY_THROUGHPUT):
         self.thr_total = 0
         self.f = open(fn)
+        pat = THROUG if interp == BY_THROUGHPUT else TRANS
+        self.iterrim_pat = re.compile(pat.format(FLOAT))
 
     def __del__ (self):
         self.f.close()
 
     def parse_row (self, row):
-        m = re.match(ITERIM_PATTERN, row)
+        m = re.match(self.iterrim_pat, row)
         if m:
-            speed, multip, interval = m.groups()
+            speed, interval = m.groups()
             return float(interval), float(speed) # * (10 ** int(multip))
         return None
 
@@ -38,10 +45,9 @@ class NetperfParser:
         interval_acc = 0
         for row in self.f:
             data = self.parse_row(row)
-            print row, data
             if data:
                 # Interval and speed is extracted from data
-                for i, sp in self.intervals(*itertools.imap(float, data)):
+                for i, sp in self.intervals(*data):
                     interval_acc += i
                     yield (interval_acc, sp)
             elif 'Local /Remote' in row:
