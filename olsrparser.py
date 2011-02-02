@@ -59,7 +59,7 @@ class OlsrParser(object):
             host_dict = self.__parse_neighbors()
 
             hop, cost = host_dict.get(dest, ("none", 0))
-            result.append((tstamp, hop))
+            result.append((tstamp - time, hop))
 
         return result
 

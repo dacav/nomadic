@@ -20,7 +20,7 @@ def parse_line (line):
 def data_begin (row): return 'BOD' in row
 def file_end (row): return row.startswith('Interface activated:')
 
-class Status :
+class BatParser :
 
     class ParseError (Exception): pass
 

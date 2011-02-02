@@ -1,64 +1,78 @@
 #!/usr/bin/env python
 '''
 \x1b[1mUsage:\x1b[0m
-    {0} <bat-test> <output> <destination> [<path0> <path1> ...]
-
-\x1b[1mInformation:\x1b[0m
-    Prints B.A.T.M.A.N convergence in gnuplot format.
-    - The bat-test file is supposed to be the output of a batman session;
-    - The output file will contain the input for gnuplot;
-
-\x1b[1mNote:\x1b[0m
-    The program writes on stdout the plotting request for gnuplot. Try to
-    launch like this:
-        {0} <params> | gnuplot -persist
-
+    {0} <batman log> <batman perf> <olsr log> <olsr perf>
 '''
+
+#\x1b[1mNote:\x1b[0m
 
 from itertools import izip as zip, \
                       count
 import sys
 import batparser
+import olsrparser
+import netperfparser
 import utils
 
-def analyze (status, outfn, destination, *paths):
-    out = utils.safe_open(outfn)
-    while (status.step()):
-        entry = status.get_entry(destination)
-        for p in paths:
-            out.write(' %d' % entry.quality_of(p))
-        out.write('\n')
-    out.close()
-    return paths
+import matplotlib.pyplot as plt
+
+class Flow:
+
+    identifier = {'10.0.0.66' : (15, 'r-'), '10.0.0.68' : (20, 'b-')}
+
+    def __init__ (self):
+        self.time = 0
+
+    def draw (self, t0, t1, val, glyph):
+        plt.plot([t0, t1], [val, val], glyph)
+
+    def update (self, to_time, gateway):
+        if gateway in Flow.identifier:
+            self.draw(self.time, to_time, *Flow.identifier[gateway])
+        self.time = to_time
+
+def plot_convergence (meshprot, perf):
+
+    f = Flow()
+    for t, gw in meshprot:
+        f.update(t, gw)
+
+    print '>>>', ' '.join((str(x) for x in perf))
 
 def main (argv=None):
     if not argv: argv = sys.argv
 
-    params = iter(argv)
-    progname = next(params)
+    progname = argv.pop(0)
     if len(argv) < 4:
-        sys.stderr.write(__doc__.format(progname))
+        print __doc__ % progname
         return 1
 
-    ifilename = next(params)
-    outfn = next(params)
-    try:
-        paths = analyze(batparser.Status(ifilename), outfn,
-                        next(params), *params)
-    except IOError, msg:
-        print >>sys.stderr, str(msg)
-        return 1
+    argv = iter(argv)
 
-    utils.suggest(sys.stdout, outfn, None, *zip(paths, count(1)))
+    batman = next(argv)
+    bat_through = next(argv)
+
+    olsr = next(argv)
+    olsr_though = next(argv)
+
+    flow = Flow()
+
+    batp = batparser.BatParser(batman, 70)
+    batperf = netperfparser.NetperfParser(bat_through)
+    plot_convergence(batp.iter_nexthop_ts('10.0.0.67'), batperf)
+
+    plt.axis([0, 70, 0, 21])
+    plt.show()
+
+#    olsrp = olsrparser.OlsrParser(olsr)
+#    oslrperf = netperfparser.NetperfParser(olsr_though)
 
     return 0
 
-#if __name__ == '__main__':
-#    sys.exit(main())
-
+if __name__ == '__main__':
+    sys.exit(main())
 
 #s = batparser.Status(sys.argv[1], int(sys.argv[2]))
-
 #seq = s.iter_nexthop_ts('10.0.0.67')
 #print '\n'.join(str(x) for x in seq)
 

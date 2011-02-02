@@ -46,13 +46,11 @@ def plot_cmpavgs (*files):
     sumval = 0
     count = 0
     for fn in files:
-        f = open(fn, 'rt')
         npp = netperfparser.NetperfParser(f)
 
         # this both runs the algorithm and retrieves the last position in
         # interval
         for interval, speed in npp: pass
-        f.close()
         sumval += npp.thr_total
         count += 1
 
@@ -69,8 +67,7 @@ def main (argv=None):
 
     mode = argv.pop(0)
     if mode == 'globavg':
-        files = itertools.imap(lambda fn : open(fn, 'rt'), argv)
-        plot_globavg(*files)
+        plot_globavg(*argv)
     elif mode == 'cmpavgs':
         plot_cmpavgs(*itertools.ifilter(lambda fn : 'batman' in fn, argv))
         plot_cmpavgs(*itertools.ifilter(lambda fn : 'olsr' in fn, argv))
@@ -82,9 +79,6 @@ def main (argv=None):
         sys.stderr.write(__doc__.format(progname))
         return 2
  
-    for f in files:
-        f.close()
-
     return 0
 
 if __name__ == '__main__':
