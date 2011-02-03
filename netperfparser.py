@@ -8,7 +8,7 @@ import warnings
 FLOAT = '\\d+\\.\\d+'
 
 # Regex for netperf's throughput
-THROUG = r'^Interim result: *({0}) +10\^(\d+)bits/s over ({0}) seconds'
+THROUG = r'^Interim result: *({0}) .*bits/s over ({0}) seconds'
 
 # Regex for netperf's transactions
 TRANS = r'^Interim result:\s*({0}) Trans/s over ({0}) seconds'
@@ -61,7 +61,7 @@ class NetperfParser:
             step = interval / nsteps
             for st in xrange(1, nsteps):
                 yield (step, 0)
-            yield (interval % nsteps, trans)
+            yield (interval - (step * (nsteps - 1)), trans)
 
     def __iter__ (self):
         interval_acc = self.time_offset
@@ -74,9 +74,9 @@ class NetperfParser:
                     yield (interval_acc, sp)
             elif 'Local /Remote' in row:
                 raise StopIteration()
-#            else:
-#                warnings.warn('Skipping row {0} of file {1}'
-#                              .format(nr, self.filename))
+            else:
+                warnings.warn('Skipping row {0} of file {1}'
+                              .format(nr, self.filename))
 
         self.thr_total = \
                 float(re.match(THROUGHPUT_PATTERN, row).groups()[0])
