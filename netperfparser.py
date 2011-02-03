@@ -74,9 +74,9 @@ class NetperfParser:
                     yield (interval_acc, sp)
             elif 'Local /Remote' in row:
                 raise StopIteration()
-            else:
-                warnings.warn('Skipping row {0} of file {1}'
-                              .format(nr, self.filename))
+            # else:
+            #     warnings.warn('Skipping row {0} of file {1}'
+            #                   .format(nr, self.filename))
 
         self.thr_total = \
                 float(re.match(THROUGHPUT_PATTERN, row).groups()[0])
