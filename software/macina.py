@@ -39,14 +39,13 @@ def parse_batman(file):
     return list(parser.iter_nexthop_ts("10.0.0.67"))
 
 def parse_olsr(file):
-    parser = batparser.BatParser(file, 70)
-    return parser.iter_nexthop_ts("10.0.0.67")
+    parser = olsrparser.OlsrParser(file)
+    return parser.parse("10.0.0.67")
 
 def macina(parse, target, filelst, infl, supl):
     pointsdict = {}
     for path in filelst:
         data = parse(path)
-        print data
         points = extract_point(data, target)
         points = filter(lambda x: x > infl, points)
         print path, points
@@ -56,12 +55,25 @@ def macina(parse, target, filelst, infl, supl):
             pointsdict[i] = l
 
     stats = []
-    for points in pointsdict.itervalues():
-        points = points
-        avg = utils.average(points)
-        var = utils.variance(points)
-        q1, median, q3 = utils.quartiles(points)
-        min(points)
+
+    if parse == parse_netperf:
+        starts = pointsdict[0]
+        ends = pointsdict[1]
+
+        length = list(e - s for e, s in zip(ends, starts))
+        print "lengths:", length
+        avg = utils.average(length)
+        var = utils.variance(length)
+        q1, median, q3 = utils.quartiles(length)
+
+        stats.append((avg, var, min(length), q1, median, q3, max(length)))
+    else:
+        for points in pointsdict.itervalues():
+            points = points
+            avg = utils.average(points)
+            var = utils.variance(points)
+            q1, median, q3 = utils.quartiles(points)
+
         stats.append((avg, var, min(points), q1, median, q3, max(points)))
     return stats
 
@@ -80,10 +92,10 @@ def main():
             target = 0
         if o == "-b":
             parse = parse_batman
-            target = "10.0.0.67"
+            target = "10.0.0.68"
         if o == "-o":
             parse = parse_olsr
-            target = "10.0.0.67"
+            target = "10.0.0.68"
         if o == "-i":
             infl = int(v)
         if o == "-s":
