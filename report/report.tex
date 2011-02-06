@@ -30,9 +30,10 @@
 
 \begin{abstract}
 
-    This report documents some tests we ran. Our purpose has been the
-    comparsion of two different routing protocols in the context of the
-    meshed network.
+    In this report we are going to analyze and compare the behaviour of
+    \batman\cite{bib:BATMAN} and \olsr\cite{bib:OLSR}, two softwares each
+    of which implement a \emph{proactive meshed networks} routing
+    protocol.
 
 \end{abstract}
 
@@ -49,20 +50,15 @@
 
     \input{sections/intro}
 
-\section{Impact of a meshing network protocol} \label{sec:Impact}
+\section{Impact on performances} \label{sec:Impact}
 \vspace{-3mm}\HRule
 
     \input{sections/impact}
 
-\section{Adding a node} \label{sec:AddNode}
-\vspace{-3mm}\HRule
-
-%    \input{sections/testbed}
-
 \section{Convergence time} \label{sec:Convergence}
 \vspace{-3mm}\HRule
 
-%    \input{sections/liveperf}
+    \input{sections/convergence}
 
 \clearpage
 \section{Conclusions} \label{sec:Conclusions}
@@ -79,6 +75,9 @@
 
     \bibitem{bib:OLSR} The \olsr\ protocol:
     \url{http://www.olsr.org/}
+
+    \bibitem{bib:NetPerf} The \emph{netperf} tool (network performance
+    measure)
 
 %    \bibitem{bib:WirelessSpec} IEEE Std 802.11\texttrademark 2007, {\it
 %        Part 11: Wireless LAN Medium Access Control (MAC) and Physical

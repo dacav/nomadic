@@ -1,30 +1,34 @@
 \begin{multicols}{2}
 
+    \subsection{About \batman}
+
+    \subsection{About \olsr}
+
     \subsection{Experiments with meshed networks}
 
-        As announced in the abstract, in this report we are going to
-        analyze and compare the behaviour of two different \emph{meshed
-        networks} protocols, which are \batman\cite{bib:BATMAN} and
-        \olsr\cite{bib:OLSR}.
-
-        The data needed for the comparison has been obtained by running
-        three different tests:
+        The comparison has been achieved by means of two different classes
+        of tests: the first one aims to measure the worsening of the network
+        performance due to the two protocols, the second one tests how
+        responsive are the protocols with respect to changes in the
+        network topology.
+        
+        The needed data has been retrieved by using some tools:
         \begin{itemize}
-        \item   Measure the impact of a protocol on the performances of
-                the network;
-        \item   Observe how the transmission quality changes by adding
-                different candidate routes to the network;
-        \item   Measure the time needed to switch on an auxiliary route
-                when when the primary one is no longer available.
+        \item   Data about latency has been obtained by means of the
+                \emph{ping} tool;
+        \item   Throughput has been measured with
+                \emph{NetPerf}\cite{bib:NetPerf};
+        \item   Statistics about protocol responsiveness for \batman\ and
+                \olsr\ have been extrapolated by parsing the output of the
+                two softwares respectively.
         \end{itemize}
-
-        Each test is described in detail respectively in
-        Section~\ref{sec:Impact}, Section~\ref{sec:AddNode} and
-        Section~\ref{sec:Convergence}.
 
     \subsection{The testbed}
 
-        The testbed is composed by (...) equipped with (\$distro,
-        \$kernel, \$specifiche) yadda yadda.
+        The testbed has been composed by four laptops equipped with
+        (\$distro, \$kernel, \$specifiche) yadda yadda. Basing on the
+        different test, the topology has been arranged specifically, so
+        far each of the following sections will be provided with a
+        \emph{Topology} subsection describing it.
 
 \end{multicols}

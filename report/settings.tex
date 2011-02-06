@@ -67,3 +67,19 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.1mm}}
 \newcommand{\Ceiling}[1]{\left\lfloor#1\right\rfloor}
 
+% Image
+
+% Parmeters:
+% (1) file
+% (2) width
+% (3) caption
+% (4) label
+\newcommand{\Picture}[4]{
+    \begin{figure}[htbp]
+    \centering
+    \includegraphics[width={#2}]{{#1}}
+    \caption{{#3}}
+    \label{{#4}}
+    \end{figure}
+}
+
