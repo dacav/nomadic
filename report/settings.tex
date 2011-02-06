@@ -1,0 +1,69 @@
+% -- PACKAGES -----------------------------------------------------------
+
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+
+% TODO have a look:
+%\usepackage{subfigure}
+
+\usepackage{color}
+\usepackage{url}
+\usepackage{a4wide, booktabs}
+\usepackage[a4paper,top=2.5cm,bottom=3.0cm,left=2cm,right=2cm,%
+            bindingoffset=5mm]{geometry}
+\usepackage[bookmarks,
+            colorlinks=true,
+            linkcolor=blue,
+            pdfauthor={Andrea Zito, Giovanni Simoni},
+            pdftitle={Report 1: Interference between Bluetooth and 802.11
+                      Wireless}]{hyperref}
+\usepackage{multicol}
+%\newenvironment{multicols}[1]{}{}
+
+% -- COMMANDS -----------------------------------------------------------
+
+\newcommand{\batman}{{\textsf BATMAN}}
+\newcommand{\olsr}{{\textsf OLSR}}
+
+\newcommand{\station}[1]{{\textsf Station #1}}
+\newcommand{\primitive}[1]{{\footnotesize \tt #1()}}
+\newcommand{\library}[1]{{\textsf #1}}
+
+\newcommand{\Variable}[1]{\mbox{\emph{#1}}}
+
+% Units of measurement:
+\newcommand{\Sec}{s}
+\newcommand{\uSec}{\mu\Sec}
+\newcommand{\MHz}{MHz}
+\newcommand{\GHz}{GHz}
+\newcommand{\Slot}{\Variable{slot}}
+\newcommand{\Frame}{\Variable{frame}}
+\newcommand{\FrameSlot}{\Frame/\Slot}
+
+\newcommand{\Bit}{\mbox{\footnotesize bit}}
+\newcommand{\Byte}{\mbox{\footnotesize byte}}
+
+\newcommand{\MBit}{M\Bit}
+\newcommand{\MByte}{M\Byte}
+
+\newcommand{\MBitSec}{\MBit/\Sec}
+\newcommand{\MByteSec}
+
+\newcommand{\KByteSec}{k\Byte/\Sec}
+\newcommand{\KBitSec}{k\Bit/\Sec}
+
+% Probability
+\newcommand{\RandomDist}{\sim}
+\newcommand{\Probability}[1]{\mbox{{\sf P}}\left(#1\right)}
+\newcommand{\Average}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\Variance}[1]{\mathbb{V}\left[#1\right]}
+\newcommand{\Normal}[2]{\mathcal{N}\left(#1, #2\right)}
+\newcommand{\Interval}[2]{\left[#1, #2\right]}
+
+% Other stuff
+\newcommand{\HRule}{\rule{\linewidth}{0.1mm}}
+\newcommand{\Ceiling}[1]{\left\lfloor#1\right\rfloor}
+

@@ -1,0 +1,95 @@
+\documentclass{article}
+
+\usepackage{mathpazo}
+
+\input{settings}
+
+\begin{document}
+  \begin{titlepage}
+    \centering
+
+     \begin{figure}[ht]
+       \centering
+       \includegraphics[angle=-90, keepaspectratio=true, width=8cm]
+                       {images/logo}
+     \end{figure}
+
+     { \large \bfseries Nomadic Comunication\par AA 2009-2010 }\par
+
+     \vspace{1.5cm}
+     { \Large \bfseries \textcolor{blue}
+        {Report 2: Mesh Networks}
+        \par }
+     \vspace{1.0cm}
+     { \large \bfseries {Group N. ?} \par }
+     \vspace{0.3cm}
+
+     {\large \bfseries {Andrea Zito, Giovanni Simoni}}
+
+     \vspace{1.0cm}
+
+\begin{abstract}
+
+    This report documents some tests we ran. Our purpose has been the
+    comparsion of two different routing protocols in the context of the
+    meshed network.
+
+\end{abstract}
+
+\end{titlepage}
+
+\thispagestyle{empty}
+\tableofcontents
+
+\clearpage
+\setcounter{page}{1}
+
+\section{Introduction} \label{sec:Intro}
+\vspace{-3mm}\HRule
+
+    \input{sections/intro}
+
+\section{Impact of a meshing network protocol} \label{sec:Impact}
+\vspace{-3mm}\HRule
+
+    \input{sections/impact}
+
+\section{Adding a node} \label{sec:AddNode}
+\vspace{-3mm}\HRule
+
+%    \input{sections/testbed}
+
+\section{Convergence time} \label{sec:Convergence}
+\vspace{-3mm}\HRule
+
+%    \input{sections/liveperf}
+
+\clearpage
+\section{Conclusions} \label{sec:Conclusions}
+\vspace{-3mm}\HRule
+
+%    \input{sections/conclusion}
+
+\bibliographystyle{plain}
+
+\begin{thebibliography}{99}
+
+    \bibitem{bib:BATMAN} The \batman\ protocol:
+    \url{http://www.open-mesh.org/}
+
+    \bibitem{bib:OLSR} The \olsr\ protocol:
+    \url{http://www.olsr.org/}
+
+%    \bibitem{bib:WirelessSpec} IEEE Std 802.11\texttrademark 2007, {\it
+%        Part 11: Wireless LAN Medium Access Control (MAC) and Physical
+%        Layer (PHY) Specifications}
+%
+%    % TODO: add info about artelatex and other used documents.
+%
+%    \bibitem{} Eric W. Weisstein,  ``Confidence Interval,'' From
+%    MathWorld--A Wolfram Web Resource,
+%    \url{http://mathworld.wolfram.com/ConfidenceInterval.html}
+
+\end{thebibliography}
+
+\end{document}

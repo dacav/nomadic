@@ -1,0 +1,43 @@
+802.11g specifications (§19. ERP)
+=======================
+rates: 1, 2, 5.5, 6, 9, 11, 12, 18, 24, 36, 48, 54
+mandatory: 1, 2, 5.5, 6, 11, 12, 24
+
+HR/DSSS (802.11b §18.3.3)
+-----------------
+slot_time=20
+sifs_time=10
+air_propagation_time=1
+preamble_length=144
+plcp_header_length=48
+mpu_max_length=14<x<(2^12 - 1)
+CWmin=31
+CWmax=1023
+
+§18.3.4:
+TX_TIME = PREAMBLE_LENGTH + PLCP_HEADER_TIME + ceiling(length+PBCC)*8/DATARATE)
+
+PBCC = 1/0 based on MODULATION value from TXVECTOR
+PREAMBLE_LENGTH = 144/72 based on TXPREAMBLE_TYPE value from TXVECTOR
+PLCP_HEADER_TIME = 48/24 based on TXPREAMBLE_TYPE value from TXVECTOR
+
+DATARATE = transmission rate of the PSDU
+LENGTH = length of PSDU in octets
+
+
+§18.4.5.3: PBCC used at 5.5
+
+802.11g transmission time: §19.8.3
+
+
+ERP-DSSS/CCK
+------------
+Same as PHY of 802.11b
+
+ERP-OFDM
+--------
+slot_time=20µs [optional 9µs if BSS only of ERP stations]
+sifs_time=10µs
+
+
+
