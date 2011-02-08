@@ -53,7 +53,7 @@ def plot_latencies (args):
 
     ypos = plt.ylim()[1]
     for xpos, lab in block:
-        plt.text(xpos, 3.5, lab)
+        plt.text(xpos + 0.5, 3.4, lab)
 
 def main (argv=None):
     if not argv: argv = sys.argv
