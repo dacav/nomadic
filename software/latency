@@ -2,13 +2,16 @@
 '''
 \x1b[1mUsage:\x1b[0m
 
-    {0} <l0> [<l1> ...]
+    {0} <spec1> <f1> [<f2> ... <fN>] <spec2> <f1> [<f2> ... <fM>]
 
-    Where <l0>, <l1> ... are the names of "latency" files (i.e. ping
-    outputs redirected on a file).
+    Where specification is something like: "1 hop:batman,olsr,static"
+    meaning that the experiment runs on a 1-hop configuration, and that
+    the files <f1>, <f2> and <f3> are respectively ping outputs
+    of experiments with batman, olsr and static routes.
 
 '''
 
+from collections import deque
 import sys
 from pingparser import PingParser
 import utils
@@ -20,37 +23,51 @@ from itertools import izip as zip, \
                       islice
 
 import matplotlib.pyplot as plt
+import os.path
 
-class BoxPlotter :
+def plot_latencies (args):
 
-    def __init__ (self, exps):
-        exps_files = list(map(lambda fn : (fn, open(fn, 'rt')), exps))
-        self.parsers = map(lambda (fn, fd) : PingParser(fd), exps_files)
-        self.files = exps_files
+    labels = deque()
+    data = deque()
+    positions = deque()
+    block = deque()
+    averages = deque()
 
-    def show (self):
-        plt.boxplot(tuple(map(list, self.parsers)), sym='')
-        plt.setp(plt.gca(), 'xticklabels', list(map(lambda (fn, fd) : fn,
-                                                    self.files)))
-        plt.show()
-
-    def __del__ (self):
-        for fn, f in self.files:
+    pos = 0
+    for label, pairs in utils.cmdline_parse(args):
+        block.append((pos, label))
+        for subl, fnam in pairs:
+            f = open(fnam, 'rt')
+            parse = list(PingParser(f))
             f.close()
+            averages.append(utils.average(parse))
+            labels.append(subl)
+            data.append(parse)
+            positions.append(pos)
+            pos += 1
+        pos += 1
+
+    plt.plot(positions, averages, 'or')
+    plt.boxplot(data, sym='', positions=positions, whis=sys.maxint)
+    plt.xticks(positions, labels, rotation=45)
+
+    ypos = plt.ylim()[1]
+    for xpos, lab in block:
+        plt.text(xpos, ypos, lab)
+
+    plt.show()
 
 def main (argv=None):
     if not argv: argv = sys.argv
 
-    progname = argv.pop(0)
+    progname = os.path.basename(argv.pop(0))
     if len(argv) < 1:
         sys.stderr.write(__doc__.format(progname))
         return 1
 
-    BoxPlotter(argv).show()
+    plot_latencies(argv)
 
     return 0
 
-
 if __name__ == '__main__':
     sys.exit(main())
-

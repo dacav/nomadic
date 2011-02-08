@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os.path
+import itertools
 
 def suggest (outstream, gnuplot_filename, xcol, *columns):
     '''
@@ -57,3 +58,29 @@ def quartiles (seq):
         return aux(seq[:m0]), seq[m0], aux(seq[m0 + 1:])
     else:
         return aux(seq[:m0 - 1]), seq[m0 - 1], aux(seq[m0:])
+
+class CmdLnError (Exception) : pass
+
+def cmdline_parse (argv):
+
+    import warnings
+
+    def subplot_args (subls, items):
+        subls = subls.split(',')
+        i = 0
+        for ls, fn in itertools.izip(subls, items):
+            if (':' in fn) or (',' in fn):
+                warning.warn('Weird filename: "%s"' % fn)
+            yield ls, fn
+            i += 1
+        if i != len(subls):
+            raise CmdLnError('Not all files have been provided')
+
+    argv = iter(argv)
+    try:
+        for chunk in argv:
+            label, _, spec = chunk.partition(':')
+            yield label, list(subplot_args(spec, argv))
+    except:
+        raise CmdLnError('Something wrong with params')
+
