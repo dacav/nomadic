@@ -1,0 +1,18 @@
+Configurazione:
+
+67 <-> 66 <-> 65
+  \          /
+   +-> 68 <-+
+
+Tempi olsr:
+- 67, 66, 68 attivi prima dell'inizio del test
+- All'inizio del test:
+  * 65: esegue bash olsr.sh: bash run.sh
+  * 66: esegue sleep 40; sudo killall olsr 
+
+Idea:
+65 ha 10 secondi per popolare la tabella di routing, poi parte netperf.
+66 è route favorita da configurazione (causa peggioramento forzato di 68).
+dopo 40 secondi (30 secondi di test netperf) 66 cade (ifdown).
+
+conf:  LinkQualityMult 10.0.0.68 0.5

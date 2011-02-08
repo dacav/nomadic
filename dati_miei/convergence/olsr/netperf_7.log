@@ -1,0 +1,54 @@
+TCP REQUEST/RESPONSE TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.0.0.67 (10.0.0.67) port 0 AF_INET : demo
+Interim result: 892.55 Trans/s over 1.12 seconds
+Interim result: 918.74 Trans/s over 1.00 seconds
+Interim result: 895.31 Trans/s over 1.03 seconds
+Interim result: 913.64 Trans/s over 1.00 seconds
+Interim result: 883.99 Trans/s over 1.03 seconds
+Interim result: 903.67 Trans/s over 1.01 seconds
+Interim result: 933.28 Trans/s over 1.00 seconds
+Interim result: 895.27 Trans/s over 1.04 seconds
+Interim result: 912.72 Trans/s over 1.00 seconds
+Interim result: 877.14 Trans/s over 1.04 seconds
+Interim result: 909.47 Trans/s over 1.02 seconds
+Interim result: 941.05 Trans/s over 1.00 seconds
+Interim result: 884.81 Trans/s over 1.06 seconds
+Interim result: 892.40 Trans/s over 1.01 seconds
+Interim result: 875.40 Trans/s over 1.02 seconds
+Interim result: 914.55 Trans/s over 1.02 seconds
+Interim result: 928.19 Trans/s over 1.00 seconds
+Interim result: 912.37 Trans/s over 1.02 seconds
+Interim result: 910.03 Trans/s over 1.00 seconds
+Interim result: 914.41 Trans/s over 1.00 seconds
+Interim result: 915.30 Trans/s over 1.00 seconds
+Interim result: 911.36 Trans/s over 1.00 seconds
+Interim result: 882.19 Trans/s over 1.03 seconds
+Interim result: 914.76 Trans/s over 1.00 seconds
+Interim result: 882.40 Trans/s over 1.04 seconds
+Interim result: 928.59 Trans/s over 1.00 seconds
+Interim result: 917.44 Trans/s over 1.01 seconds
+Interim result: 880.75 Trans/s over 1.04 seconds
+Interim result: 902.36 Trans/s over 1.00 seconds
+Interim result: 64.86 Trans/s over 13.91 seconds
+Interim result: 730.81 Trans/s over 1.20 seconds
+Interim result: 926.28 Trans/s over 1.01 seconds
+Interim result: 881.35 Trans/s over 1.05 seconds
+Interim result: 896.54 Trans/s over 1.02 seconds
+Interim result: 900.68 Trans/s over 1.00 seconds
+Interim result: 925.93 Trans/s over 1.00 seconds
+Interim result: 938.44 Trans/s over 1.00 seconds
+Interim result: 889.33 Trans/s over 1.06 seconds
+Interim result: 874.57 Trans/s over 1.02 seconds
+Interim result: 887.19 Trans/s over 1.00 seconds
+Interim result: 905.47 Trans/s over 1.00 seconds
+Interim result: 946.80 Trans/s over 1.00 seconds
+Interim result: 867.17 Trans/s over 1.09 seconds
+Interim result: 923.23 Trans/s over 1.00 seconds
+Interim result: 864.11 Trans/s over 1.07 seconds
+Interim result: 907.61 Trans/s over 1.00 seconds
+Local /Remote
+Socket Size   Request  Resp.   Elapsed  Trans.
+Send   Recv   Size     Size    Time     Rate         
+bytes  Bytes  bytes    bytes   secs.    per sec   
+
+16384  87380  1        1       60.00     705.82   
+16384  87380 
