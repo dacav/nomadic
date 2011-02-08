@@ -4,7 +4,7 @@
 
     {0} <spec1> <f1> [<f2> ... <fN>] <spec2> <f1> [<f2> ... <fM>]
 
-    Where specification is something like: "1 hop:batman,olsr,static"
+    Where specification is something like: "1 hop:1:batman,olsr,static"
     meaning that the experiment runs on a 1-hop configuration, and that
     the files <f1>, <f2> and <f3> are respectively ping outputs
     of experiments with batman, olsr and static routes.
@@ -34,11 +34,11 @@ def plot_latencies (args):
     averages = deque()
 
     pos = 0
-    for label, pairs in utils.cmdline_parse(args):
+    for label, thresh, pairs in utils.cmdline_parse(args):
         block.append((pos, label))
         for subl, fnam in pairs:
             f = open(fnam, 'rt')
-            parse = list(PingParser(f))
+            parse = list(utils.cut_outlayers(PingParser(f), thresh))
             f.close()
             averages.append(utils.average(parse))
             labels.append(subl)
@@ -53,9 +53,7 @@ def plot_latencies (args):
 
     ypos = plt.ylim()[1]
     for xpos, lab in block:
-        plt.text(xpos, ypos, lab)
-
-    plt.show()
+        plt.text(xpos, 3.5, lab)
 
 def main (argv=None):
     if not argv: argv = sys.argv
@@ -66,6 +64,11 @@ def main (argv=None):
         return 1
 
     plot_latencies(argv)
+    plt.ion()
+    plt.draw()
+    
+    from IPython.Shell import IPShellEmbed
+    IPShellEmbed([])()
 
     return 0
 

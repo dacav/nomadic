@@ -79,8 +79,25 @@ def cmdline_parse (argv):
     argv = iter(argv)
     try:
         for chunk in argv:
-            label, _, spec = chunk.partition(':')
-            yield label, list(subplot_args(spec, argv))
+            params = chunk.split(':')
+            if len(params) == 3:
+                label, thrs, spec = chunk.split(':')
+            else:
+                label, spec = chunk.split(':')
+                thrs = 0
+            yield label, float(thrs), list(subplot_args(spec, argv))
     except:
         raise CmdLnError('Something wrong with params')
+
+def cut_outlayers (data, factor=1, key=None):
+    if factor == 0:
+        return data
+    if key != None:
+        data = list(itertools.map(key, data))
+    elif type(data) != list:
+        data = list(data)
+    avg = average(data)
+    threshold = variance(data, avg) * factor
+    return itertools.ifilter(lambda x : abs(x - avg) < threshold,
+                             data)
 
