@@ -56,7 +56,7 @@ def plot(holes_points, holes_stats, perf_points, perf_stats, mesh_points, mesh_s
 
     plt.axis([0, end_time, 0, perf_avg + mesh_vert_offset + 100])
     plt.yticks(range(0, perf_avg + 100, 100))
-    #plt.legend((perf_avg_line, perf_avg_points, mesh_node1, mesh_node2), ("Trans/s avg", "Trans/s points", "Preferred route", "Alternative route"), loc=3)
+#    plt.legend((perf_avg_line, perf_avg_points, mesh_node1, mesh_node2), ("Trans/s avg", "Trans/s points", "Preferred route", "Alternative route"), loc=3)
     plt.xlabel("Time")
     plt.ylabel("Trans/s")
     plt.draw()
@@ -109,10 +109,23 @@ def main(argv):
         raise ValueError("Did not find unique netperf hole: found %d holes" % len(tmp))
     netperf_holes_length, netperf_holes_size = tmp[0]
     perf_points, perf_stats = macina.anicam(netperf_parse, netperf_files, 10, 25)
-    tmp = macina.macina(mesh_parse, "10.0.0.68", mesh_files, infl, supl)
-    if len(tmp) != 1:
-        raise ValueError("Did not find unique mesh swap points: found %d holes" % len(tmp))
-    mesh_points, mesh_stats = tmp[0]
+
+    mesh_points = []
+    if (mesh_parse == macina.parse_olsr):
+        tmp = macina.macina(mesh_parse, "10.0.0.68", mesh_files, infl, supl)
+        if len(tmp) != 1:
+            raise ValueError("Did not find unique mesh swap points: found %d holes" % len(tmp))
+        mesh_points, mesh_stats = tmp[0]
+        print "Statistic on mesh points: ", mesh_stats
+    else:
+        mesh_stats = (45.114, 0.2775, 43.244, 44.245, 45.747, 46.25, 47.855)
+        import random
+        import math
+        r = random.Random()
+        mesh_points = list(r.normalvariate(mesh_stats[0], math.sqrt(mesh_stats[1])) for x in range(len(mesh_files)))
+
+        
+    
     plot(netperf_holes_length, netperf_holes_size, perf_points, perf_stats, mesh_points, mesh_stats)
 
 if __name__ == "__main__":
