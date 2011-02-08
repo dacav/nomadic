@@ -1,0 +1,17 @@
+Configurazione:
+
+67 <-> 66 <-> 65
+  \          /
+   +-> 68 <-+
+
+Tempi batman:
+- 67, 66 attivi prima dell'inizio del test
+- 68 attivato all'inizio del test
+- All'inizio del test:
+  * 65: esegue bash batman.sh: bash run.sh
+  * 66: esegue sleep 40; sudo killall batmand 
+
+Idea:
+65 ha 10 secondi per popolare la tabella di routing, poi parte netperf.
+66 essendo già attivo avrà un punteggio migliore (route preferita),
+dopo 40 secondi (30 secondi di test netperf) 66 cade (ifdown).
