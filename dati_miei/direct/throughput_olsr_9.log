@@ -1,0 +1,64 @@
+TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 10.0.0.67 (10.0.0.67) port 0 AF_INET : demo
+Interim result:   17.81 10^6bits/s over 1.10 seconds
+Interim result:   17.05 10^6bits/s over 1.05 seconds
+Interim result:   17.66 10^6bits/s over 1.01 seconds
+Interim result:   16.57 10^6bits/s over 1.06 seconds
+Interim result:   16.02 10^6bits/s over 1.04 seconds
+Interim result:   16.77 10^6bits/s over 1.02 seconds
+Interim result:   17.10 10^6bits/s over 1.04 seconds
+Interim result:   16.90 10^6bits/s over 1.02 seconds
+Interim result:   17.57 10^6bits/s over 1.04 seconds
+Interim result:   17.01 10^6bits/s over 1.05 seconds
+Interim result:   17.68 10^6bits/s over 1.01 seconds
+Interim result:   16.68 10^6bits/s over 1.06 seconds
+Interim result:   16.93 10^6bits/s over 1.02 seconds
+Interim result:   17.63 10^6bits/s over 1.04 seconds
+Interim result:   17.11 10^6bits/s over 1.03 seconds
+Interim result:   16.81 10^6bits/s over 1.02 seconds
+Interim result:   16.62 10^6bits/s over 1.01 seconds
+Interim result:   17.33 10^6bits/s over 1.01 seconds
+Interim result:   16.10 10^6bits/s over 1.08 seconds
+Interim result:   16.45 10^6bits/s over 1.05 seconds
+Interim result:   17.65 10^6bits/s over 1.04 seconds
+Interim result:   17.17 10^6bits/s over 1.05 seconds
+Interim result:   17.12 10^6bits/s over 1.00 seconds
+Interim result:   17.37 10^6bits/s over 1.05 seconds
+Interim result:   17.23 10^6bits/s over 1.05 seconds
+Interim result:   17.41 10^6bits/s over 1.05 seconds
+Interim result:   17.09 10^6bits/s over 1.05 seconds
+Interim result:   17.21 10^6bits/s over 1.06 seconds
+Interim result:   17.28 10^6bits/s over 1.05 seconds
+Interim result:   17.30 10^6bits/s over 1.05 seconds
+Interim result:   17.54 10^6bits/s over 1.04 seconds
+Interim result:   17.10 10^6bits/s over 1.02 seconds
+Interim result:   17.69 10^6bits/s over 1.03 seconds
+Interim result:   17.50 10^6bits/s over 1.01 seconds
+Interim result:   17.04 10^6bits/s over 1.03 seconds
+Interim result:   16.84 10^6bits/s over 1.04 seconds
+Interim result:   17.04 10^6bits/s over 1.03 seconds
+Interim result:   17.16 10^6bits/s over 1.04 seconds
+Interim result:   16.97 10^6bits/s over 1.01 seconds
+Interim result:   16.95 10^6bits/s over 1.04 seconds
+Interim result:   17.59 10^6bits/s over 1.04 seconds
+Interim result:   17.15 10^6bits/s over 1.02 seconds
+Interim result:   17.10 10^6bits/s over 1.00 seconds
+Interim result:   17.12 10^6bits/s over 1.00 seconds
+Interim result:   16.99 10^6bits/s over 1.05 seconds
+Interim result:   17.31 10^6bits/s over 1.05 seconds
+Interim result:   16.59 10^6bits/s over 1.03 seconds
+Interim result:   17.29 10^6bits/s over 1.01 seconds
+Interim result:   16.94 10^6bits/s over 1.05 seconds
+Interim result:   17.41 10^6bits/s over 1.05 seconds
+Interim result:   17.59 10^6bits/s over 1.01 seconds
+Interim result:   16.16 10^6bits/s over 1.10 seconds
+Interim result:   17.28 10^6bits/s over 1.02 seconds
+Interim result:   16.08 10^6bits/s over 1.08 seconds
+Interim result:   15.92 10^6bits/s over 1.01 seconds
+Interim result:   15.55 10^6bits/s over 1.02 seconds
+Interim result:   16.37 10^6bits/s over 1.03 seconds
+Recv   Send    Send                          
+Socket Socket  Message  Elapsed              
+Size   Size    Size     Time     Throughput  
+bytes  bytes   bytes    secs.    10^6bits/sec  
+
+ 87380  16384  16384    60.12      16.99   
