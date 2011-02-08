@@ -14,7 +14,7 @@ import utils
 def extract_point(data, target):
     prev_target = None
     plst = []
-    
+
     for t, v in data:
         if prev_target == None:
             prev_target = v == target
@@ -28,7 +28,7 @@ def extract_point(data, target):
             #Found change point
             plst.append(t)
             prev_target = True
-            
+
     return plst
 
 def parse_netperf(file):
@@ -42,13 +42,36 @@ def parse_olsr(file):
     parser = olsrparser.OlsrParser(file)
     return parser.parse("10.0.0.67")
 
+def anicam(parse, filelst, infl, supl):
+    points = []
+    gpoints = []
+    for path in filelst:
+        offset = None
+        tmp = []
+        data = parse(path)
+        for t, v in data:
+            tmp.append((t,v))
+            if t >= infl and t <= supl:
+                points.append(v)
+            if offset == None and v == 0 and t >=supl:
+                offset = 40 - t
+
+        if offset == None: raise ValueError("Not found any 0")
+        for t,v in tmp:
+            gpoints.append(((t + offset), v))
+
+    avg = utils.average(points)
+    var = utils.variance(points)
+    q1, median, q3 = utils.quartiles(points)
+    
+    return gpoints, (avg, var, min(points), q1, median, q3, max(points))
+
 def macina(parse, target, filelst, infl, supl):
     pointsdict = {}
     for path in filelst:
         data = parse(path)
         points = extract_point(data, target)
         points = filter(lambda x: x > infl, points)
-        print path, points
         for i, p in enumerate(points):
             l = pointsdict.get(i, [])
             l.append(p)
@@ -61,20 +84,20 @@ def macina(parse, target, filelst, infl, supl):
         ends = pointsdict[1]
 
         length = list(e - s for e, s in zip(ends, starts))
-        print "lengths:", length
+        print "netperf hole lengths:", length
         avg = utils.average(length)
         var = utils.variance(length)
         q1, median, q3 = utils.quartiles(length)
 
-        stats.append((avg, var, min(length), q1, median, q3, max(length)))
+        stats.append((length, (avg, var, min(length), q1, median, q3, max(length))))
     else:
         for points in pointsdict.itervalues():
-            points = points
+            print "mesh points:", points
             avg = utils.average(points)
             var = utils.variance(points)
             q1, median, q3 = utils.quartiles(points)
 
-        stats.append((avg, var, min(points), q1, median, q3, max(points)))
+        stats.append((points, (avg, var, min(points), q1, median, q3, max(points))))
     return stats
 
 
@@ -111,16 +134,15 @@ def main():
         print __doc__.format(sys.argv[0])
         return 1
 
-    stats = macina(parse, target, args, infl, supl)
+    points, stats = macina(parse, target, args, infl, supl)
     for avg, var, minv, q1, median, q3, maxv in stats:
         print("avg=%.3f, var=%.3f, minv=%.3f q1=%.3f, median=%.3f, " \
-              "q3=%.3f maxv=%.3f" % (avg, var, minv, q1, median, q3, maxv)) 
+              "q3=%.3f maxv=%.3f" % (avg, var, minv, q1, median, q3, maxv))
 
     return 0
-    
+
 if __name__ == "__main__":
     import getopt
     import sys
 
     sys.exit(main())
-
