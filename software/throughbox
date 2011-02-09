@@ -2,7 +2,7 @@
 """
 \x1b[1mUsage\x1b[0m
     {0} direct/* 1hop/* 2hop/*
-    Because it"s time to get dirthy and stop overthinking.
+    Because it's time to get dirthy and stop overthinking.
 
 """
 
@@ -60,11 +60,11 @@ def plot_boxes (*exps):
 
     plt.boxplot(data, sym='', positions=positions, whis=sys.maxint)
     plt.xticks(positions, labels, rotation=45)
-    plt.plot(positions, map(utils.average, data), 'or')
+    plt.plot(positions, map(utils.average, data), 'om')
 
-    plt.plot(positions[0:3], map(utils.average, data[0:3]))
-    plt.plot(positions[3:6], map(utils.average, data[3:6]))
-    plt.plot(positions[6:9], map(utils.average, data[6:9]))
+    plt.plot(positions[0:3], map(utils.average, data[0:3]), "-m")
+    plt.plot(positions[3:6], map(utils.average, data[3:6]), "-m")
+    plt.plot(positions[6:9], map(utils.average, data[6:9]), "-m")
 
     plt.text(0.5, 10, "direct")
     plt.text(4.5, 10, "1 hop")
