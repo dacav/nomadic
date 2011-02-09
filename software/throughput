@@ -78,7 +78,7 @@ def main (argv=None):
     else:
         sys.stderr.write(__doc__.format(progname))
         return 2
- 
+
     return 0
 
 if __name__ == '__main__':

@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+"""
+\x1b[1mUsage\x1b[0m
+    {0} direct/* 1hop/* 2hop/*
+    Because it"s time to get dirthy and stop overthinking.
+
+"""
+
+import sys
+import os.path
+
+from itertools import imap, ifilter
+from collections import deque
+from netperfparser import throughput_of
+
+import matplotlib.pyplot as plt
+
+KIND_BATMAN, KIND_OLSR, KIND_STATIC = xrange(3)
+GROUP_DIRECT, GROUP_1H, GROUP_2H = xrange(3)
+
+is_static = lambda (t,g,k) : k == KIND_STATIC
+is_batman = lambda (t,g,k) : k == KIND_BATMAN
+is_olsr   = lambda (t,g,k) : k == KIND_OLSR
+
+is_direct = lambda (t,g,k) : g == GROUP_DIRECT
+is_1hop   = lambda (t,g,k) : g == GROUP_1H
+is_2hop   = lambda (t,g,k) : g == GROUP_2H
+
+def plot_boxes (*exps):
+
+    data = deque()
+    labels = deque()
+    positions = deque()
+
+    def build (select, pos, d):
+        data.append(map(lambda x : x[0], ifilter(select, d[0])))
+        positions.append(pos)
+        labels.append(d[1])
+
+    static = filter(is_static, exps), "static"
+    batman = filter(is_batman, exps), "batman"
+    olsr   = filter(is_olsr, exps),   "olsr"
+
+    build(is_direct, 0, static)
+    build(is_direct, 1, batman)
+    build(is_direct, 2, olsr)
+
+    build(is_1hop, 4, static)
+    build(is_1hop, 5, batman)
+    build(is_1hop, 6, olsr)
+
+    build(is_2hop,  8, static)
+    build(is_2hop,  9, batman)
+    build(is_2hop, 10, olsr)
+
+    plt.boxplot(data, sym='', positions=positions, whis=sys.maxint)
+    plt.xticks(positions, labels, rotation=45)
+    plt.text(0.5, 10, "direct")
+    plt.text(4.5, 10, "1 hop")
+    plt.text(8.5, 10, "2 hop")
+
+def crunch (fn):
+
+    def group (path):
+        if path == "direct": return GROUP_DIRECT
+        if path == "1hop" : return GROUP_1H
+        if path == "2hop" : return GROUP_2H
+
+    def kind (basename):
+        if "batman" in basename: return KIND_BATMAN
+        if "olsr" in basename: return KIND_OLSR
+        if "static" in basename: return KIND_STATIC
+
+    return (throughput_of(fn),
+            group(os.path.dirname(fn)),
+            kind(os.path.basename(fn)))
+
+def main (argv=None):
+    if not argv: argv = sys.argv
+
+    progname = os.path.basename(argv.pop(0))
+    if len(argv) < 2:
+        sys.stderr.write(__doc__.format(progname))
+        return 1
+
+    thr_files = ifilter(lambda x : "throughput" in x, argv)
+    plot_boxes(*imap(crunch, thr_files))
+
+    plt.ion()
+    plt.draw()
+    from IPython.Shell import IPShellEmbed
+    IPShellEmbed([])()
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

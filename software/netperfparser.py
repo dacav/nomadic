@@ -13,7 +13,7 @@ THROUG = r'^Interim result: *({0}) .*bits/s over ({0}) seconds'
 # Regex for netperf's transactions
 TRANS = r'^Interim result:\s*({0}) Trans/s over ({0}) seconds'
 
-THROUGHPUT_PATTERN = re.compile('^.*({0}) *$'.format(FLOAT))
+THROUGHPUT_PATTERN = re.compile('^.* +({0}) *$'.format(FLOAT))
 
 BY_THROUGHPUT, BY_TRANSACTIONS = xrange(2)
 
@@ -73,6 +73,8 @@ class NetperfParser:
                     interval_acc += i
                     yield (interval_acc, sp)
             elif 'Local /Remote' in row:
+                # What? this works only with transactions!
+                # Not that I care
                 raise StopIteration()
             # else:
             #     warnings.warn('Skipping row {0} of file {1}'
@@ -81,3 +83,10 @@ class NetperfParser:
         self.thr_total = \
                 float(re.match(THROUGHPUT_PATTERN, row).groups()[0])
 
+    def get_throughput (self):
+        for row in self.f: pass
+        return float(re.match(THROUGHPUT_PATTERN, row).groups()[0])
+        
+def throughput_of (fn):
+    ret = NetperfParser(fn).get_throughput()
+    return ret
