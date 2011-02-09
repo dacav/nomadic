@@ -8,6 +8,7 @@
 
 import sys
 import os.path
+import utils
 
 from itertools import imap, ifilter
 from collections import deque
@@ -31,6 +32,7 @@ def plot_boxes (*exps):
     data = deque()
     labels = deque()
     positions = deque()
+    avg_lines = deque()
 
     def build (select, pos, d):
         data.append(map(lambda x : x[0], ifilter(select, d[0])))
@@ -53,8 +55,17 @@ def plot_boxes (*exps):
     build(is_2hop,  9, batman)
     build(is_2hop, 10, olsr)
 
+    positions = list(positions)
+    data = list(data)
+
     plt.boxplot(data, sym='', positions=positions, whis=sys.maxint)
     plt.xticks(positions, labels, rotation=45)
+    plt.plot(positions, map(utils.average, data), 'or')
+
+    plt.plot(positions[0:3], map(utils.average, data[0:3]))
+    plt.plot(positions[3:6], map(utils.average, data[3:6]))
+    plt.plot(positions[6:9], map(utils.average, data[6:9]))
+
     plt.text(0.5, 10, "direct")
     plt.text(4.5, 10, "1 hop")
     plt.text(8.5, 10, "2 hop")
