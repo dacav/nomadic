@@ -31,23 +31,25 @@ def plot_latencies (args):
     data = deque()
     positions = deque()
     block = deque()
-    averages = deque()
 
     pos = 0
     for label, thresh, pairs in utils.cmdline_parse(args):
         block.append((pos, label))
+        sub_avgs = deque()
+        sub_poss = deque()
         for subl, fnam in pairs:
             f = open(fnam, 'rt')
             parse = list(utils.cut_outlayers(PingParser(f), thresh))
             f.close()
-            averages.append(utils.average(parse))
+            sub_avgs.append(utils.average(parse))
             labels.append(subl)
             data.append(parse)
-            positions.append(pos)
+            sub_poss.append(pos)
             pos += 1
+        positions.extend(sub_poss)
+        plt.plot(sub_poss, sub_avgs, '-r')
         pos += 1
 
-    plt.plot(positions, averages, 'or')
     plt.boxplot(data, sym='', positions=positions, whis=sys.maxint)
     plt.xticks(positions, labels, rotation=45)
 
