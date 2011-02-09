@@ -37,10 +37,10 @@ def plot(holes_points, holes_stats, perf_points, perf_stats, mesh_points, mesh_s
 
     swap_avg, mesh_points = fake_swap_point(hole_avg, swap_avg, mesh_points, crash_offset)
     
-    perf_avg_line = plt.plot([init_offset,crash_offset], [perf_avg, perf_avg], "r-")
-    plt.plot([crash_offset,crash_offset], [perf_avg, 0], "r-")
-    plt.plot([crash_offset + hole_avg, crash_offset + hole_avg], [0, perf_avg], "r-")    
-    plt.plot([crash_offset + hole_avg,end_time], [perf_avg, perf_avg], "r-")
+#    perf_avg_line = plt.plot([init_offset,crash_offset], [perf_avg, perf_avg], "r-")
+    plt.plot([crash_offset,crash_offset], [perf_avg + mesh_vert_offset, 0], "k--")
+    plt.plot([crash_offset + hole_avg, crash_offset + hole_avg], [perf_avg + mesh_vert_offset, 0], "k--")    
+#    plt.plot([crash_offset + hole_avg,end_time], [perf_avg, perf_avg], "r-")
     px, py = zip(*perf_points)
     perf_avg_points = plt.plot(px, py, "r.")
     
@@ -52,15 +52,18 @@ def plot(holes_points, holes_stats, perf_points, perf_stats, mesh_points, mesh_s
     mesh_node2 = plt.plot([swap_avg, end_time], [perf_avg + mesh_vert_offset, perf_avg + mesh_vert_offset], "b-", linewidth=2)
     plt.boxplot(mesh_points, vert=0, sym="", positions=[perf_avg + mesh_vert_offset], widths=150, whis=sys.maxint)
 
-    plt.plot([init_offset, init_offset], [0, perf_avg + mesh_vert_offset], "b--")
+    plt.plot([init_offset, init_offset], [0, perf_avg + mesh_vert_offset], "k--")
 
     plt.axis([0, end_time, 0, perf_avg + mesh_vert_offset + 100])
     plt.yticks(range(0, perf_avg + 100, 100))
-#    plt.legend((perf_avg_line, perf_avg_points, mesh_node1, mesh_node2), ("Trans/s avg", "Trans/s points", "Preferred route", "Alternative route"), loc=3)
+ 
     plt.xlabel("Time")
     plt.ylabel("Trans/s")
     plt.draw()
     plt.ion()
+
+    def plot_legend():
+        plt.legend((perf_avg_points, mesh_node1, mesh_node2), ("Trans/s points", "Preferred route", "Alternative route"), loc=3)
 
     from IPython.Shell import IPShellEmbed
     ipshell = IPShellEmbed([])
