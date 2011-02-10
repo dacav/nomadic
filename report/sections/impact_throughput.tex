@@ -1,10 +1,19 @@
 \subsection{Test introduction}
 
-    \subsubsection{Objective}
+    The throughput is probably the most relevant index of the network
+    quality. In the context of \emph{mesh networking} a natural concern
+    is how the overhead of the underlaying routing protocol affects it.
+
+    \subsubsection{Expected results}
+
+        \begin{itemize}
+        \item   Small number of hosts;
+        \item   Negligible variation of performances;
+        \end{itemize}
 
     \subsubsection{Test modality}
 
-\subsection{Test with direct hop}
+\subsection{Test with direct link}
 
     \subsubsection{Topology}
 
@@ -21,6 +30,7 @@
                  \emph{\batman} andf \emph{\olsr}}
                 {pic:ThpDirect}
 
+\subsection{Test with 1 hop}
 
     \subsubsection{Topology}
 
@@ -28,6 +38,7 @@
                 {.90\columnwidth}
                 {Configuration with 1 hop}
                 {pic:Layout1Hop}
+
         \Picture{images/throughput_plot_1hop}
                 {0.7 \columnwidth}
                 {Impact of the meshing protocols on the throughput of the
@@ -36,6 +47,7 @@
                  \emph{\olsr}}
                 {pic:Thp1Hop}
 
+\subsection{Test with 2 hop}
 
     \subsubsection{Topology}
 
@@ -51,7 +63,4 @@
                  the performance with \emph{static routes}, \emph{\batman}
                  and \emph{\olsr}}
                 {pic:Thp2Hops}
-
-\begin{multicols}{2}
-\end{multicols}
 

@@ -1,34 +1,60 @@
-\begin{multicols}{2}
+An interesting issue about \emph{meshed networks} is how they
+influence the network performances with respect to a network in which
+routes are defined.
 
-    \subsection{About \batman}
+\subsection{About \batman}
 
-    \subsection{About \olsr}
+    * Jitter (collisions)
+    * Modulo jitter sono sovrapposti -> worst case
+        piu` realisticamente i secondi non sono sovrapposti
+    * Best suited for little networks
 
-    \subsection{Experiments with meshed networks}
+\subsection{About \olsr}
 
-        The comparison has been achieved by means of two different classes
-        of tests: the first one aims to measure the worsening of the network
-        performance due to the two protocols, the second one tests how
-        responsive are the protocols with respect to changes in the
-        network topology.
+    \paragraph{Default Constants in \olsr}
 
-        The needed data has been retrieved by using some tools:
+        Functioning:
         \begin{itemize}
-        \item   Data about latency has been obtained by means of the
-                \emph{ping} tool;
-        \item   Throughput has been measured with
-                \emph{NetPerf}\cite{bib:NetPerf};
-        \item   Statistics about protocol responsiveness for \batman\ and
-                \olsr\ have been extrapolated by parsing the output of the
-                two softwares respectively.
+        \item   A probing for the direct neighbors is achieved by means of
+                a periodically sent \emph{Hello} message, which is
+                broadcasted. Some of the direct neighbors are used as
+                relay nodes;
+        \item   The actual \emph{Topology Control};
         \end{itemize}
 
-    \subsection{The testbed}
+        Best suited for extended networks
 
-        The testbed has been composed by four laptops equipped with
-        (\$distro, \$kernel, \$specifiche) yadda yadda. Basing on the
-        different test, the topology has been arranged specifically, so
-        far each of the following sections will be provided with a
-        paragraph describing it.
+        Reported by section 18 of the rfc:
 
-\end{multicols}
+        \begin{itemize}
+        \item   \Const{HELLO\_INTERVAL} of 2 seconds;
+        \item   \Const{TC\_INTERVAL} of 5 seconds
+        \end{itemize}
+
+\subsection{Experiments with meshed networks}
+
+    The comparison has been achieved by means of two different classes
+    of tests: the first one aims to measure the worsening of the network
+    performance due to the two protocols, the second one tests how
+    responsive are the protocols with respect to changes in the
+    network topology.
+
+    The needed data has been retrieved by using some tools:
+    \begin{itemize}
+    \item   Data about latency has been obtained by means of the
+            \emph{ping} tool;
+    \item   Throughput has been measured with
+            \emph{NetPerf}\cite{bib:NetPerf};
+    \item   Statistics about protocol responsiveness for \batman\ and
+            \olsr\ have been extrapolated by parsing the output of the
+            two softwares respectively.
+    \end{itemize}
+
+\subsection{The testbed}
+
+    The testbed has been composed by four laptops equipped with
+    (\$distro, \$kernel, \$specifiche) yadda yadda. Basing on the
+    different test, the topology has been arranged specifically, so
+    far each of the following sections will be provided with a
+    paragraph describing it.
+
