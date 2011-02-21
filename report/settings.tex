@@ -75,11 +75,13 @@
 % (3) caption
 % (4) label
 \newcommand{\Picture}[4]{
+    \end{multicols}
     \begin{figure}[htbp]
     \centering
     \includegraphics[width={#2}]{{#1}}
     \caption{{#3}}
     \label{{#4}}
     \end{figure}
+    \begin{multicols}{2}
 }
 

@@ -2,20 +2,34 @@
 
     The throughput is probably the most relevant index of the network
     quality. In the context of \emph{mesh networking} a natural concern
-    is how the overhead of the underlaying routing protocol affects it.
+    is how the overhead coming from the underlaying routing protocol
+    affects it.
 
-    \subsubsection{Expected results}
+    As we previously mentioned [did we?], both the protocols we worked
+    with are of the \emph{proactive} family: the hosts keep sending,
+    with a certain periodicity, messages about the topology: the protocol
+    related traffic increases along with the number of hosts composing the
+    network.  Our testbed was composed by just a few laptops, so a
+    reasonable expectation from this test is a negligible variation of the
+    performances.
 
-        \begin{itemize}
-        \item   Small number of hosts;
-        \item   Negligible variation of performances;
-        \end{itemize}
-
-    \subsubsection{Test modality}
+    The core of the experiment consisted in a simple throughput test with
+    \emph{NetPerf} on three different network topologies. For each of the
+    analyzed meshing protocols we achieved the test while the meshing
+    protocol was running. We also run an instance of the test with
+    statically compiled routes in order to obtain an \emph{ideal overhead
+    situation} to be used as term of comparison.
 
 \subsection{Test with direct link}
 
     \subsubsection{Topology}
+
+        The \emph{direct link} topology is the simplest: only two laptops
+        have been enabled:
+        \begin{itemize}
+        \item   The laptop sending data (address 10.0.0.65);
+        \item   The laptop receiving data (address 10.0.0.67).
+        \end{itemize}
 
         \Picture{images/direct}
                 {.49\columnwidth}
@@ -63,4 +77,3 @@
                  the performance with \emph{static routes}, \emph{\batman}
                  and \emph{\olsr}}
                 {pic:Thp2Hops}
-
