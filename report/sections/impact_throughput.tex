@@ -14,7 +14,7 @@
     performances.
 
     The core of the experiment consisted in a simple throughput test with
-    \emph{NetPerf} on three different network topologies. For each of the
+    \netperf\ on three different network topologies. For each of the
     analyzed meshing protocols we achieved the test while the meshing
     protocol was running. We also run an instance of the test with
     statically compiled routes in order to obtain an \emph{ideal overhead
@@ -24,12 +24,12 @@
 
     \subsubsection{Topology}
 
-        The \emph{direct link} topology is the simplest: only two laptops
-        have been enabled:
+        The \emph{direct link} topology is the simplest. Only two laptops
+        have been enabled (see Picture~\ref{pic:LayoutDirect}):
         \begin{itemize}
         \item   The laptop sending data (address 10.0.0.65);
         \item   The laptop receiving data (address 10.0.0.67).
-        \end{itemize}
+    \end{itemize}
 
         \Picture{images/direct}
                 {.49\columnwidth}
@@ -43,6 +43,16 @@
                  respectively, the performance with \emph{static routes},
                  \emph{\batman} andf \emph{\olsr}}
                 {pic:ThpDirect}
+
+        \begin{tabular}{rc}
+        \toprule
+        Route definition & Throughput (Mbit/sec) \\
+        \midrule
+        Static route    & 16.932 \\
+        \batman\        & 16.883 \\
+        \olsr\          & 16.957 \\
+        \bottomrule
+        \end{tabular}
 
 \subsection{Test with 1 hop}
 
