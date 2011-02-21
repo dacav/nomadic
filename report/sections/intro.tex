@@ -4,6 +4,18 @@ routes are defined.
 
 \subsection{About \batman}
 
+    The \batman\ protocol is based on a proactive approach exploiting a
+    flooding technique. Each host in a \batman\ mesh network produces, on a
+    regular time basis, an \emph{Originator Message} which is sent in
+    broadcast and received by all directly reachable neighbors. Every
+    \emph{Originator Message} contains, among other things, a sequence
+    number and a TTL. Each node is in charge of retransmitting a message
+    from another node if:
+    \begin{itemize}
+    \item   The sequence number hasn't been seen yet;
+    \item   The messages' TTL hasn't been expired.
+    \end{itemize}
+
     * Jitter (collisions)
     * Modulo jitter sono sovrapposti -> worst case
         piu` realisticamente i secondi non sono sovrapposti
