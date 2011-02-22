@@ -14,9 +14,9 @@
     performances.
 
     The core of the experiment consisted in a simple throughput test with
-    \netperf\ on three different network topologies. For each of the
-    analyzed meshing protocols we achieved the test while the meshing
-    protocol was running. We also run an instance of the test with
+    \netperf\ on three different network topologies. For both the
+    analyzed meshing protocols we performed the test while the protocol's
+    software was running. We also run an instance of the test with
     statically compiled routes in order to obtain an \emph{ideal overhead
     situation} to be used as term of comparison.
 
@@ -29,7 +29,18 @@
         \begin{itemize}
         \item   The laptop sending data (address 10.0.0.65);
         \item   The laptop receiving data (address 10.0.0.67).
-    \end{itemize}
+        \end{itemize}
+
+        In this situation the message exchange is very limited: every
+        synchronization step consists in the two hosts simply exchanging a
+        few UDP packets (for a more detailed description refer to
+        Section\ref{sec:Intro}).
+
+        The network performances measure confirms our hypothesis: as shown
+        in Table~\ref{tab:ThrDirect} the performaces variation is so
+        minimal that is more likely to be attributed to the different
+        condition of the wireless channel among experiments, rather then
+        the actual overhead of the protocols.
 
         \Picture{images/direct}
                 {.49\columnwidth}
@@ -44,15 +55,23 @@
                  \emph{\batman} andf \emph{\olsr}}
                 {pic:ThpDirect}
 
-        \begin{tabular}{rc}
-        \toprule
-        Route definition & Throughput (Mbit/sec) \\
-        \midrule
-        Static route    & 16.932 \\
-        \batman\        & 16.883 \\
-        \olsr\          & 16.957 \\
-        \bottomrule
-        \end{tabular}
+        \begin{table}[htbp]
+            \centering
+            \begin{tabular}{rcccccccc}
+            \toprule
+            Route & Average (Mbit/s) & Variance & Min & First Quartile &
+            Median & Third Quartile & Max & Comp. Static \\
+            \midrule
+            Static      & 16.970 & 0.191 & 15.74 & 16.67 & 16.97 & 17.26
+                        & 18.08  & - \\
+            \batman\    & 16.926 & 0.251 & 15.41 & 16.58 & 16.94 & 17.3
+                        & 18.4   & 0.997 \\
+            \olsr\      & 16.990 & 0.313 & 14.98 & 16.65 & 17.02 & 17.35
+                        & 18.86  & 1.001 \\
+            \bottomrule
+            \end{tabular}
+            \label{tab:ThrDirect}
+        \end{table}
 
 \subsection{Test with 1 hop}
 
@@ -71,6 +90,24 @@
                  \emph{\olsr}}
                 {pic:Thp1Hop}
 
+        \begin{table}[htbp]
+            \centering
+            \begin{tabular}{rcccccccc}
+            \toprule
+            Route & Average (Mbit/s) & Variance & Min & First Quartile &
+            Median & Third Quartile & Max & Comp. Static \\
+            \midrule
+            Static      & 8.496 & 1.118 & 2.635 & 8.09 & 8.62 & 9.08
+                        & 11.12 & - \\
+            \batman\    & 7.973 & 2.197 & 1.455 & 7.425 & 8.27 & 8.855
+                        & 11.71 & 0.938 \\
+            \olsr\      & 6.924 & 7.68 & 0.096 & 6.91 & 8.01 & 8.62
+                        & 10.21 & 0.815 \\
+            \bottomrule
+            \end{tabular}
+            \label{tab:ThrDirect}
+        \end{table}
+
 \subsection{Test with 2 hop}
 
     \subsubsection{Topology}
@@ -87,3 +124,22 @@
                  the performance with \emph{static routes}, \emph{\batman}
                  and \emph{\olsr}}
                 {pic:Thp2Hops}
+
+        \begin{table}[htbp]
+            \centering
+            \begin{tabular}{rcccccccc}
+            \toprule
+            Route & Average (Mbit/s) & Variance & Min & First Quartile &
+            Median & Third Quartile & Max & Comp. Static \\
+            \midrule
+            Static      & 5.344 & 2.183 & 1.332 & 4.82 & 5.84 & 6.27
+                        & 8.22 & - \\
+            \batman\    & 5.381 & 2.03 & 0.753 & 4.92 & 5.84 & 6.29
+                        & 8.81 & 1.007 \\
+            \olsr\      & 5.193 & 3.228 & 0.12 & 5.015 & 5.82 & 6.33
+                        & 7.77 & 0.972 \\
+            \bottomrule
+            \end{tabular}
+            \label{tab:ThrDirect}
+        \end{table}
+
