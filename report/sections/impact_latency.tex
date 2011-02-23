@@ -1,3 +1,28 @@
+\subsection{Test introduction}
+    Beyond throughput, another measure of interest when analyzing the
+    performance of a network is the latency. We've seen in the
+    previous section that the presence of the \emph{mesh} routing
+    protocol do not seem to affect the overall throughput in the small
+    environment at our disposal. An obvious question which could be
+    raised is if the same is true also when taking into account latency.
+
+    To answer this question we performed similar test to the one
+    described above. For each topology and routing strategy we
+    performed a latency test by \emph{pinging} the sink node from the
+    destination. Each measurement lasted 600 seconds.
+
+\subsection{Results}
+The results we obtained are summarized in
+Picture~\ref{pic:Latency}. As it's clear from the image, we have a
+situation analogous to the one of throughput. The difference between
+the three routing strategy is negligible.
+
+Again an interesting note can be made on the behavior of \olsr. Even
+if in the \emph{direct} topology it obtained the best result (though
+with really spread min-max bounds) in the remaining experiments it
+achieves worse performance. \batman\ instead is more constant and
+always scores results comparable with the \emph{static} setting.
+
 \Picture{images/latency_plot}
         {0.7 \columnwidth}
         {Impact of the meshing protocols on the transmission latency. The
@@ -7,5 +32,3 @@
          routes} (first boxplot), \emph{\batman} (second boxplot) and
          \emph{\olsr} (third boxplot).}
         {pic:Latency}
-
-
