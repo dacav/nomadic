@@ -36,14 +36,14 @@ def plot(holes_points, holes_stats, perf_points, perf_stats, mesh_points, mesh_s
     mesh_vert_offset=150
 
     swap_avg, mesh_points = fake_swap_point(hole_avg, swap_avg, mesh_points, crash_offset)
-    
+
 #    perf_avg_line = plt.plot([init_offset,crash_offset], [perf_avg, perf_avg], "r-")
     plt.plot([crash_offset,crash_offset], [perf_avg + mesh_vert_offset, 0], "k--")
-    plt.plot([crash_offset + hole_avg, crash_offset + hole_avg], [perf_avg + mesh_vert_offset, 0], "k--")    
+    plt.plot([crash_offset + hole_avg, crash_offset + hole_avg], [perf_avg + mesh_vert_offset, 0], "k--")
 #    plt.plot([crash_offset + hole_avg,end_time], [perf_avg, perf_avg], "r-")
     px, py = zip(*perf_points)
     perf_avg_points = plt.plot(px, py, "r.")
-    
+
     norm_holes = list(x + crash_offset for x in holes_points)
     plt.boxplot(norm_holes, vert=0, sym="", positions=[perf_avg/2], widths=150, whis=sys.maxint)
 
@@ -56,7 +56,7 @@ def plot(holes_points, holes_stats, perf_points, perf_stats, mesh_points, mesh_s
 
     plt.axis([0, end_time, 0, perf_avg + mesh_vert_offset + 100])
     plt.yticks(range(0, perf_avg + 100, 100))
- 
+
     plt.xlabel("Time")
     plt.ylabel("Trans/s")
     plt.draw()
@@ -78,7 +78,7 @@ def main(argv):
     netperf_regex = ""
     target = None
     infl = 0
-    supl = sys.maxint    
+    supl = sys.maxint
 
     for o, v in opts:
         if o == "-b":
@@ -88,16 +88,16 @@ def main(argv):
             mesh_parse = macina.parse_olsr
             mesh_regex = v
         elif o == "-n":
-            netperf_parse = macina.parse_netperf            
+            netperf_parse = macina.parse_netperf
             netperf_regex = v
         elif o == "-i":
             infl = int(v)
         elif o == "-s":
-            supl = int(v)            
+            supl = int(v)
         else:
             print("Option not supported: %s" % o)
             return 1
-        
+
     mesh_files = []
     netperf_files = []
 
@@ -106,7 +106,7 @@ def main(argv):
         elif len(re.findall(mesh_regex, path)) > 0: mesh_files.append(path)
         else: print("warning: file not matched -> %s" % path)
 
-    
+
     tmp = macina.macina(netperf_parse, 0, netperf_files, infl, supl)
     if len(tmp) != 1:
         raise ValueError("Did not find unique netperf hole: found %d holes" % len(tmp))
@@ -127,8 +127,8 @@ def main(argv):
         r = random.Random()
         mesh_points = list(r.normalvariate(mesh_stats[0], math.sqrt(mesh_stats[1])) for x in range(len(mesh_files)))
 
-        
-    
+
+
     plot(netperf_holes_length, netperf_holes_size, perf_points, perf_stats, mesh_points, mesh_stats)
 
 if __name__ == "__main__":
