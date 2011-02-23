@@ -9,10 +9,11 @@
 import sys
 import os.path
 import utils
+import itertools
 
 from itertools import imap, ifilter
 from collections import deque
-from netperfparser import throughput_of
+from netperfparser import NetperfParser
 
 import matplotlib.pyplot as plt
 
@@ -35,7 +36,8 @@ def plot_boxes (*exps):
     avg_lines = deque()
 
     def build (select, pos, d):
-        data.append(map(lambda x : x[0], ifilter(select, d[0])))
+        l = map(lambda x : x[0], ifilter(select, d[0]))        
+        data.append(list(itertools.chain(*l)))
         positions.append(pos)
         labels.append(d[1])
 
@@ -66,9 +68,9 @@ def plot_boxes (*exps):
     plt.plot(positions[3:6], map(utils.average, data[3:6]), "-m")
     plt.plot(positions[6:9], map(utils.average, data[6:9]), "-m")
 
-    plt.text(0.5, 10, "direct")
-    plt.text(4.5, 10, "1 hop")
-    plt.text(8.5, 10, "2 hop")
+#    plt.text(0.5, 10, "direct")
+#    plt.text(4.5, 10, "1 hop")
+#    plt.text(8.5, 10, "2 hop")
 
 def crunch (fn):
 
@@ -82,7 +84,9 @@ def crunch (fn):
         if "olsr" in basename: return KIND_OLSR
         if "static" in basename: return KIND_STATIC
 
-    return (throughput_of(fn),
+    thr_points = list(x[1] for x in NetperfParser(fn))
+
+    return (thr_points,
             group(os.path.dirname(fn)),
             kind(os.path.basename(fn)))
 
