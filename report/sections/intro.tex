@@ -6,8 +6,8 @@ routes are defined.
 
     The \batman\ protocol is based on a proactive approach exploiting a
     flooding technique. Each host in a \batman\ mesh network produces, on a
-    regular time basis, an \emph{Originator Message} which is sent in
-    broadcast and received by all directly reachable neighbors. Every
+    regular basis, an \emph{Originator Message} which is sent in
+    broadcast, thus is received by all directly reachable neighbors. Every
     \emph{Originator Message} contains, among other things, a sequence
     number and a TTL. Each node is in charge of retransmitting a message
     from another node if:
@@ -16,32 +16,36 @@ routes are defined.
     \item   The message's TTL hasn't been expired.
     \end{itemize}
 
-    * Jitter (collisions)
-    * Modulo jitter sono sovrapposti -> worst case
-        piu` realisticamente i secondi non sono sovrapposti
-    * Best suited for little networks
+    The suggested period for the flooding operation is of 1 second, thus
+    in an environment configured with default values this is the actual
+    frequency of the flooding operation.
+
+%    In order to reduce the probability of collision with other
+%    Originators, the software exploits a random jitter in the message
+%    sending.
+
+%    * Jitter (collisions)
+%    * Modulo jitter sono sovrapposti -> worst case
+%        piu` realisticamente i secondi non sono sovrapposti
+%    * Best suited for little networks
 
 \subsection{About \olsr}
 
-    \paragraph{Default Constants in \olsr}
-
-        Functioning:
-        \begin{itemize}
-        \item   A probing for the direct neighbors is achieved by means of
-                a periodically sent \emph{Hello} message, which is
-                broadcasted. Some of the direct neighbors are used as
-                relay nodes;
-        \item   The actual \emph{Topology Control};
-        \end{itemize}
-
-        Best suited for extended networks
-
-        Reported by section 18 of the rfc:
-
-        \begin{itemize}
-        \item   \Const{HELLO\_INTERVAL} of 2 seconds;
-        \item   \Const{TC\_INTERVAL} of 5 seconds
-        \end{itemize}
+    The protocol is far more complex than \batman, and it's best suited
+    for extended and complex networks. All the complexity, however, is
+    related to the internal implementation, and it doesn't affect that
+    much the actual network interaction. What really concerns the network
+    is the software timing:
+    \begin{itemize}
+    \item   A probing for the direct neighbors is achieved by means of a
+            periodically sent \emph{Hello} message, which is broadcasted.
+            The \Const{HELLO\_INTERVAL} constant, determining the
+            broadcasting period is of 2 seconds;
+    \item   Some of the direct neighbors are used as relay nodes, and are
+            targeted with the \emph{Topology Control} messages.
+            The \Const{TC\_INTERVAL} constant, determining the direct
+            communication of 5 seconds
+    \end{itemize}
 
 \subsection{Experiments with meshed networks}
 
