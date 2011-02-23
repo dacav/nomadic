@@ -1,6 +1,9 @@
-An interesting issue about \emph{meshed networks} is how they
-influence the network performances with respect to a network in which
-routes are defined.
+An interesting issue about \emph{meshed networks} is how they influence
+the network performances with respect to configurations in which routes are
+defined statically.
+
+The comparison we worked on takes in account \batman\cite{bib:BATMAN} and
+\olsr\cite{bib:OLSR}, both implementing mesh routing protocols.
 
 \subsection{About \batman}
 
@@ -9,8 +12,18 @@ routes are defined.
     regular basis, an \emph{Originator Message} which is sent in
     broadcast, thus is received by all directly reachable neighbors. Every
     \emph{Originator Message} contains, among other things, a sequence
-    number and a TTL. Each node is in charge of retransmitting a message
-    from another node if:
+    number and a TTL.
+
+    Each node keeps, for any destination host, a \emph{sliding window} of
+    recent sequence numbers. The window gets moved as new sequence numbers
+    arrive, and this makes oldest sequence numbers obsolete. The preferred
+    route is given by the host having the maximum number of entries in the
+    sliding window.  So far, each packet contains only a few data, and
+    doesn't give any kind of information on how the routing table is
+    structured in the sender Originator.
+
+    The node is in charge of re-broadcasting a message from another node
+    if:
     \begin{itemize}
     \item   The sequence number hasn't been seen yet;
     \item   The message's TTL hasn't been expired.
@@ -20,31 +33,23 @@ routes are defined.
     in an environment configured with default values this is the actual
     frequency of the flooding operation.
 
-%    In order to reduce the probability of collision with other
-%    Originators, the software exploits a random jitter in the message
-%    sending.
-
-%    * Jitter (collisions)
-%    * Modulo jitter sono sovrapposti -> worst case
-%        piu` realisticamente i secondi non sono sovrapposti
-%    * Best suited for little networks
-
 \subsection{About \olsr}
 
-    The protocol is far more complex than \batman, and it's best suited
-    for extended and complex networks. All the complexity, however, is
-    related to the internal implementation, and it doesn't affect that
-    much the actual network interaction. What really concerns the network
-    is the software timing:
+    The protocol is far more complex than \batman, as it's best suited for
+    extended and complex networks. Such complexity boils down to
+    each host periodically sending of a part of the \emph{link-state}
+    table. The details are beyond the purposes of this report, since
+    they're not affecting that much the actual network interaction. What
+    really concerns us is the software timing:
     \begin{itemize}
     \item   A probing for the direct neighbors is achieved by means of a
-            periodically sent \emph{Hello} message, which is broadcasted.
-            The \Const{HELLO\_INTERVAL} constant, determining the
-            broadcasting period is of 2 seconds;
+            periodically broadcasted \emph{Hello} message. The
+            \Const{HELLO\_INTERVAL} constant, determining the broadcasting
+            period, is of 2 seconds;
     \item   Some of the direct neighbors are used as relay nodes, and are
-            targeted with the \emph{Topology Control} messages.
-            The \Const{TC\_INTERVAL} constant, determining the direct
-            communication of 5 seconds
+            targeted with messages of type \emph{Topology Control}.
+            The \Const{TC\_INTERVAL} constant schedules a direct
+            communication every 5 seconds.
     \end{itemize}
 
 \subsection{Experiments with meshed networks}
