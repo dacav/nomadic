@@ -3,26 +3,32 @@
     Beyond throughput, another measure of interest when analyzing the
     performance of a network is the latency. We've seen in the
     previous section that the presence of the \emph{mesh} routing
-    protocol do not seem to affect the overall throughput in the small
-    environment at our disposal. An obvious question which could be
+    protocol doesn't seem to affect the overall throughput in the small
+    environment we worked with. An obvious question which could be
     raised is if the same is true also when taking into account latency.
 
     To answer this question we performed similar test to the one
     described above. For each topology and routing strategy we
-    performed a latency test by \emph{pinging} the sink node from the
-    destination. Each measurement lasted 600 seconds.
+    performed a latency test by \emph{pinging} for 600 seconds the sink
+    node from the destination.
 
 \subsection{Results}
-The results we obtained are summarized in
-Picture~\ref{pic:Latency}. As it's clear from the image, we have a
-situation analogous to the one of throughput. The difference between
-the three routing strategy is negligible.
 
-Again an interesting note can be made on the behavior of \olsr. Even
-if in the \emph{direct} topology it obtained the best result (though
-with really spread min-max bounds) in the remaining experiments it
-achieves worse performance. \batman\ instead is more constant and
-always scores results comparable with the \emph{static} setting.
+    The results we obtained are summarized in
+    Picture~\ref{pic:Latency}. As it's visually clear from the image, we
+    have a situation analogous to the one of throughput. The difference
+    between the three routing strategy is negligible, while the latency
+    grows pointedly as we force the communication through more hops.
+    The precise values of the data represented graphically are available,
+    for the \emph{direct}, \emph{1-hop} and \emph{2-hops} topologies
+    respectively, in Table~\ref{tab:LatDirect}, \ref{tab:Lat1Hop} and
+    \ref{tab:Lat2Hop}.
+
+    Again an interesting note can be made on the behavior of \olsr. Even
+    if in the \emph{direct} topology it obtained the best result (though
+    with really spread min-max bounds) in the remaining experiments it
+    achieves worse performance. \batman\ instead is more constant and
+    always scores results comparable with the \emph{static} setting.
 
 \Picture{images/latency_plot}
         {0.7 \columnwidth}
@@ -33,3 +39,63 @@ always scores results comparable with the \emph{static} setting.
          routes} (first boxplot), \emph{\batman} (second boxplot) and
          \emph{\olsr} (third boxplot).}
         {pic:Latency}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{rccccccc}
+    \toprule
+    Protocol & Average & Variance & Min & 1st Quartile &
+    Median & 3rd Quartile & Max \\
+    & \footnotesize{\MilliSec} & & \footnotesize{\MilliSec} & \footnotesize{\MilliSec} &
+    \footnotesize{\MilliSec} & \footnotesize{\MilliSec} & \footnotesize{\MilliSec} \\
+
+    \midrule
+    static & 0.692 & 0.001 & 0.654 & 0.671 & 0.686 & 0.706 & 0.764 \\
+    batman & 0.68 & 0.0 & 0.647 & 0.665 & 0.679 & 0.693 & 0.721 \\
+    olsr & 0.63 & 0.009 & 0.487 & 0.571 & 0.615 & 0.661 & 1.2 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Latency results for direct topology.}
+    \label{tab:LatDirect}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{rccccccc}
+    \toprule
+    Protocol & Average & Variance & Min & 1st Quartile &
+    Median & 3rd Quartile & Max \\
+    & \footnotesize{\MilliSec} & & \footnotesize{\MilliSec} & \footnotesize{\MilliSec} &
+    \footnotesize{\MilliSec} & \footnotesize{\MilliSec} & \footnotesize{\MilliSec} \\
+
+    \midrule
+    static & 1.178 & 0.048 & 0.956 & 1.06 & 1.11 & 1.18 & 2.32 \\
+    batman & 1.163 & 0.043 & 0.946 & 1.04 & 1.1 & 1.19 & 2.12 \\
+    olsr & 1.206 & 0.047 & 0.952 & 1.09 & 1.15 & 1.21 & 2.38 \\
+
+    \bottomrule
+    \end{tabular}
+    \caption{Latency results for 1 hop topology.}
+    \label{tab:Lat1Hop}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{rccccccc}
+    \toprule
+    Protocol & Average & Variance & Min & 1st Quartile &
+    Median & 3rd Quartile & Max \\
+    & \footnotesize{\MilliSec} & & \footnotesize{\MilliSec} & \footnotesize{\MilliSec} &
+    \footnotesize{\MilliSec} & \footnotesize{\MilliSec} & \footnotesize{\MilliSec} \\
+
+    \midrule
+    static & 1.676 & 0.062 & 1.41 & 1.54 & 1.6 & 1.67 & 2.92 \\
+    batman & 1.639 & 0.079 & 1.36 & 1.48 & 1.55 & 1.66 & 3.2 \\
+    olsr & 1.745 & 0.08 & 1.4 & 1.58 & 1.65 & 1.815 & 3.09 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Latency results for 2 hops topology.}
+    \label{tab:Lat2Hop}
+\end{table}
+
+

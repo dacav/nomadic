@@ -73,8 +73,12 @@ netperf -H 10.0.0.67 -D 1 -l 60
             \toprule
             Protocol & Average & Variance & Min & 1st Quartile &
             Median & 3rd Quartile & Max & Comp. wr.t.\\
-            & \footnotesize{\MBitsSec} & & \footnotesize{\MBitsSec} & \footnotesize{\MBitsSec} &
-            \footnotesize{\MBitsSec} & \footnotesize{\MBitsSec} & \footnotesize{\MBitsSec} & Static\\
+            & \footnotesize{\MBitsSec} &
+            & \footnotesize{\MBitsSec} &
+              \footnotesize{\MBitsSec} &
+              \footnotesize{\MBitsSec} &
+              \footnotesize{\MBitsSec} &
+              \footnotesize{\MBitsSec} & Static\\
 
             \midrule
             Static      & 16.970 & 0.191 & 15.74 & 16.67 & 16.97 & 17.26
@@ -85,7 +89,10 @@ netperf -H 10.0.0.67 -D 1 -l 60
                         & 18.86  & 1.001 \\
             \bottomrule
             \end{tabular}
-            \caption{Throughput result for direct topology.}
+            \caption{Throughput result for direct topology. The last
+                     column shows a proportional comparison with the
+                     average throughput of the statically compiled
+                     routes.}
             \label{tab:ThrDirect}
         \end{table}
 

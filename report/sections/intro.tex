@@ -1,20 +1,19 @@
 An interesting issue about \emph{meshed networks} is how they influence
 the network performances with respect to configurations in which routes are
-defined statically.
-
-The comparison we worked on takes in account \batman\cite{bib:BATMAN} and
-\olsr\cite{bib:OLSR}, both implementing mesh routing protocols.
+defined statically. The comparison we worked on takes in account
+\batman\cite{bib:BATMAN} and \olsr\cite{bib:OLSR}, both implementing mesh
+routing protocols.
 
 \subsection{About \batman}
 
     The \batman\ protocol is based on a proactive approach exploiting a
     flooding technique. Each host in a \batman\ mesh network produces, on a
     regular basis, an \emph{Originator Message} which is sent in
-    broadcast, thus is received by all directly reachable neighbors. Every
-    \emph{Originator Message} contains, among other things, a sequence
-    number and a TTL.
+    broadcast and gets received by all directly reachable neighbors. Every
+    \emph{Originator Message} contains, among other things, a
+    \emph{Sequence Number} and a \emph{TTL}.
 
-    Each node keeps, for any destination host, a \emph{sliding window} of
+    Each node keeps, for any destination host, a sliding window of
     recent sequence numbers. The window gets moved as new sequence numbers
     arrive, and this makes oldest sequence numbers obsolete. The preferred
     route is given by the host having the maximum number of entries in the
@@ -25,7 +24,7 @@ The comparison we worked on takes in account \batman\cite{bib:BATMAN} and
     The node is in charge of re-broadcasting a message from another node
     if:
     \begin{itemize}
-    \item   The sequence number hasn't been seen yet;
+    \item   The Sequence Number hasn't been seen yet;
     \item   The message's TTL hasn't been expired.
     \end{itemize}
 
@@ -74,7 +73,16 @@ The comparison we worked on takes in account \batman\cite{bib:BATMAN} and
 \subsection{The testbed}
 
     The testbed has been composed by four laptops equipped with
-    (\$distro, \$kernel, \$specifiche) yadda yadda. Basing on the
-    different test, the topology has been arranged specifically, so
-    far each of the following sections will be provided with a
-    paragraph describing it.
+    \emph{Ubuntu 10.10 GNU/Linux} operating systems. We used the following
+    softwares:
+    \begin{description}
+    \item[\netperf] Version \emph{2.4.4-5ubuntu2};
+    \item[\batman] Daemon version \emph{0.3.2-5} (userspace version);
+    \item[\olsr] Daemon version \emph{0.5.6-r7-1};
+    \item[iptables] Version \emph{1.4.4-2ubuntu3}.
+    \end{description}
+
+    Depending on the tests, the network topologies have been arranged
+    specifically, so far each section of this report will be provided with
+    a paragraph describing it.
+

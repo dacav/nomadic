@@ -47,11 +47,21 @@ def plot_latencies (args):
             sub_poss.append(pos)
             pos += 1
         positions.extend(sub_poss)
-        plt.plot(sub_poss, sub_avgs, 'o-r')        
+        plt.plot(sub_poss, sub_avgs, 'o-r')
         pos += 1
 
     plt.boxplot(data, sym='', positions=positions, whis=sys.maxint)
     plt.xticks(positions, labels, rotation=45)
+
+    for d, l in zip(data, labels):
+        avg = utils.average(d)
+        print '%10s' % l, '&',
+        print round(avg, 3), '&',
+        print round(utils.variance(d, avg), 3), '&',
+        print round(min(d), 3), '&',
+        for x in utils.quartiles(d):
+            print round(x, 3), '&',
+        print round(max(d), 3)
 
     ypos = plt.ylim()[1]
     for xpos, lab in block:
