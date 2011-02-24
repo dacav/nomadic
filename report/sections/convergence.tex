@@ -205,3 +205,94 @@ Picture~\ref{pic:olsr_convergence_time} and~\ref{pic:olsr_convergence_change}.
               instants of \olsr.}
             \label{tab:convergence_olsr}
         \end{table}
+
+\subsection{Consideration}
+As can be easily seen by comparing Table~\ref{tab:convergence_batman}
+with Table~\ref{tab:convergence_olsr}, the two \emph{mesh} routing
+protocol have almost equivalent performances: both of them show a
+\emph{black out time} of circa 13 seconds. The results are so similar
+which we didn't find any important aspect which cannot be attributed
+to the mutated condition of the channel quality between tests.
+
+An interesting aspect which we discovered about both protocols is that
+they both employ a mechanism to discover missing paths, which goes
+beyond the simple (at least for \batman) general flow of the
+protocol.
+
+This is really easy to notice by looking at the output of \batman\ which
+we reported in Listing~\ref{lst:batman_log}. Here we see that the
+quality measure associated to node 10.0.0.66 (the one we marked with
+*) keep increasing until it goes abruptly to 0. Interestingly at that
+time such node was already down (the counter marked with § remains
+always the same).
+
+\begin{figure}[tbhp]
+\begin{Verbatim}[fontsize=\footnotesize]
+...
+ Originator  (#/255)         Nexthop [outgoingIF]:   Potential  nexthops ... [B.A.T.M.A.N. 0.3.2 ... ]
+10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
+10.0.0.67       (184)       10.0.0.66 [      eth1]:       10.0.0.66 (184*)       10.0.0.68 (138)
+10.0.0.68       (192)       10.0.0.68 [      eth1]:       10.0.0.68 (192)       10.0.0.66 (124)
+
+  Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ... ]
+10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
+10.0.0.67       (184)       10.0.0.66 [      eth1]:       10.0.0.66 (184*)       10.0.0.68 (140)
+10.0.0.68       (199)       10.0.0.68 [      eth1]:       10.0.0.68 (199)       10.0.0.66 (126)
+
+  Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ...]
+10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
+10.0.0.67       (185)       10.0.0.66 [      eth1]:       10.0.0.66 (185*)       10.0.0.68 (144)
+10.0.0.68       (202)       10.0.0.68 [      eth1]:       10.0.0.68 (202)       10.0.0.66 (126)
+
+  Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ...]
+10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
+10.0.0.67       (186)       10.0.0.66 [      eth1]:       10.0.0.66 (186*)       10.0.0.68 (146)
+10.0.0.68       (207)       10.0.0.68 [      eth1]:       10.0.0.68 (207)       10.0.0.66 (  0)
+
+  Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ...]
+10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
+10.0.0.67       (150)       10.0.0.68 [      eth1]:       10.0.0.66 (  0*)       10.0.0.68 (150)
+10.0.0.68       (211)       10.0.0.68 [      eth1]:       10.0.0.68 (211)       10.0.0.66 (  0)
+...
+\end{Verbatim}
+\caption{Snippet of \batman\ output}
+\label{lst:batman_log}
+\end{figure}
+
+A similar thing happens also in \olsr\ the link to node 10.0.0.66 is
+maintained with a better quality measure but it is abruptly removed
+from the 2-hop list for node 10.0.0.67 (see Listings~\ref{lst:olsr_log}).
+
+\begin{figure}[tbhp]
+\begin{Verbatim}[fontsize=\footnotesize]
+...
+--- 11:20:20.930522 ---------------------------------------------------- LINKS
+
+IP address       hyst         LQ       ETX
+10.0.0.68        0.000  0.482/0.576    3.596
+10.0.0.66        0.000  0.729/0.765    1.793
+
+--- 11:20:20.930547 ----------------------- TWO-HOP NEIGHBORS
+
+IP addr (2-hop)  IP addr (1-hop)  Total cost
+10.0.0.67        10.0.0.66        2.641
+                 10.0.0.68        4.680
+...
+--- 11:20:21.030784 ---------------------------------------------------- LINKS
+
+IP address       hyst         LQ       ETX
+10.0.0.68        0.000  0.482/0.576    3.596
+10.0.0.66        0.000  0.729/0.765    1.793
+
+--- 11:20:21.030836 ----------------------- TWO-HOP NEIGHBORS
+
+IP addr (2-hop)  IP addr (1-hop)  Total cost
+10.0.0.67        10.0.0.68        4.680
+...
+\end{Verbatim}
+\caption{Snippet of \olsr\ output}
+\label{lst:olsr_log}
+\end{figure}
+
+Given this behavior, our hypothesis is that the quality of the link
+should not influence the convergence time.
