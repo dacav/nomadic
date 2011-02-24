@@ -1,12 +1,12 @@
 \subsection{Test Introduction}
-Given we are working in a \emph{mesh} network in which nodes may join
-and leave frequently and without coordination an interesting problem
+Given we are working in a \emph{mesh} network, in which nodes may join
+and leave frequently and without coordination, an interesting problem
 is how the routing protocol handles the sudden loss of one of its
 routes. From the point of view of a user the most important factor in
 this scenario is the time window in which he is cut off from the
 network.
 
-This is rationale behind the following test in which we measured the
+This is the rationale behind the following test in which we measured the
 convergence time of \batman\ and \olsr\ when subjected to a forced
 link removal.
 
@@ -14,8 +14,9 @@ link removal.
  The topology of the network is the one depicted in
 Picture~\ref{pic:LayoutConvergence} . The laptops are disposed in a
 diamond shaped topology with the \emph{source} and \emph{sink} nodes
-at the boundaries. The node 10.0.0.66 is the \emph{preferred} path
-from the \emph{source} to the \emph{sink}.
+at the boundaries. The node 10.0.0.66 acts as \emph{preferred} path
+from the \emph{source} to the \emph{sink}, while the host 10.0.0.68 works
+as \emph{auxiliary} node, to be chosen when the primary route falls.
 
 \Picture{images/convergence}
         {.90\columnwidth}
@@ -37,7 +38,7 @@ iptables -A INPUT -m mac --mac-source $(sinkMAC) -j DROP;
 iptables -A INPUT -m mac --mac-source $(preferredMAC) -j DROP;
 \end{verbatim}
 
-\item On 10.0.0.68 (secondary)
+\item On 10.0.0.68 (auxiliary)
 \begin{verbatim}
 iptables -A INPUT -m mac --mac-source $(secondaryMAC) -j DROP;
 \end{verbatim}
@@ -49,22 +50,24 @@ iptables -A INPUT -m mac --mac-source $(sourceMAC) -j DROP;
 \end{itemize}
 
 \subsection{Test structure}
-A single iteration of the experiment consists in the following phases:
-\begin{enumerate}
-\item second 0: start experiment
-\item second 10: start \netperf\ measurement
-\item second 40: 10.0.0.66 network interface shutdown
-\item second 70: test end
-\end{enumerate}
 
+\Picture{images/convergence_timing}
+        {.90\columnwidth}
+        {Convergence experiment timeline}
+        {pic:ConvergenceTiming}
+
+
+The phases of a single iteration of the experiment are shown in
+Picture~\ref{pic:ConvergenceTiming}.
 We used the result of \netperf\ to measure the time window in
-which the \emph{source} was't able to communicate with the
-\emph{sink}. We could have simplified our lives by just using ping to
-collect this information, but we wanted to also give some indication
-on the throughput before and after the route changed. As it turned out
-however, \netperf\ is not the most stable software: most of the times
-it cold not resume the packet flow after the route change happened (even if
-ping worked fine). To circumvent this problem we let \netperf\ perform
+which the \emph{source} wasn't able to communicate with the
+\emph{sink}. We could have simplified our lives by just using \emph{ping}
+to collect this information, but we also wanted to give some indication
+on the throughput before and after the route changed. As already
+mentioned, however, \netperf\ is not the most stable software in the
+world: most of the times it didn't manage to resume the packet flow after
+the route change happened, while in the same situation \emph{ping} worked
+fine. To circumvent this problem we let \netperf\ perform
 an alternative kind of test which measured the number of transaction
 per second (with a transaction being characterized as an exchange of a
 single request and a single response).
@@ -73,46 +76,46 @@ by \emph{Wireshark} and the log of the routing protocol to extrapolate
 the instant in which the route was actually changed.
 
 A problem we had to face was how to force node 10.0.0.66 to be the
-preferred route. In \olsr\ we exploited a configuration parameter
-which let us penalize (in this case by a factor of 0.5) the alternate
-route by hand:
+preferred route. With \olsr\ we exploited a configuration parameter
+which allows to penalize a route with a multiplicative factor on it's
+quality. We used a degradation factor of 0.8:
 
 \begin{verbatim}
 LinkQualityMult 10.0.0.68 0.8
 \end{verbatim}
 
-\batman\ however proved itself more problematic. After a long search
-we were unable to find any \emph{clean} way of dealing with this
-matter. We then decided to address the problem from another angle.
-At first we thought about using an \emph{iptables} rulo to impose a
-limit on the number of packet allowed to be sent by the node
-10.0.0.68. This choice however didn't satisfy us as it might have had
-repercussions on the result of our test which we weren't able to
-foreseen.
+\batman, on the other hand proved itself to be more problematic. After a
+long search
+we were unable to find a \emph{clean} way of dealing with this
+matter. We then decided to address the problem from another perspective.
+At first we thought about using an \emph{iptables} rule to impose a
+limit on the number of packets sent by the auxiliary host. This choice
+however is very intrusive: besides taming the mesh protocol, it
+could have had other unforeseeable repercussions on the result of our
+test.
 
-In the end we exploit our understanding of the protocol to \emph{game
-  it}: we started the \batman\ daemon on node 10.0.0.68 with 5 seconds
-delay. Thanks to the sliding window mechanism described in section
-\ref{bla} and the limited duration of our experiment we were certain
-that the preferred route would be through node 10.0.0.66. In case
-there was any doubt about our reasoning, this consideration is
-sustained both by the protocol log and the \emph{Wireshark}
-recordings.
-
+In the end we exploited our understanding of the protocol to \emph{game
+it}: we started the \batman\ daemon on node 10.0.0.68 with 5 seconds
+delay. Thanks to the limited duration of our experiment and to the sliding
+window mechanism (described in Section~\ref{sec:Intro}) we were reasonably
+certain that the preferred route would have passed through the node
+10.0.0.66. The protocol's log and the recordings of \emph{Wireshark}
+proved this consideration to be correct.
 
 \subsection{\batman}
 In this section we present the result we obtained for
-\batman. Picture~\ref{pic:batman_convergence} show a summary of the
+\batman. Picture~\ref{pic:batman_convergence} shows a summary of the
 entire test whereas Picture~\ref{pic:batman_convergence_time}
-and~\ref{pic:batman_convergence_change} show the respectively the
-details of the convergence time and the route change instant.
-Finally all the relative statistics are reported in
+and Picture~\ref{pic:batman_convergence_change} show the respectively the
+details of the convergence time and the route change instant.  Finally all
+the relative statistics are reported in
 Table~\ref{tab:convergence_batman}.
 
-The 3 dashed lines represent, from left to right, the start of the
-\netperf\ measurement, the forced removal of node 10.0.0.66 and the
-mean convergence time. The red dots indicate all the single
-transaction per second data point. Finally the horizontal line shows
+The 3 vertical dashed lines represent, from left to right, the start of
+the \netperf\ measurement, the forced removal of node 10.0.0.66 and the
+average convergence time. The red dots indicate all the single
+transaction per second data point. Finally the upper horizontal line
+shows
 the route used by the source (where green corresponds to 10.0.0.66 and
 blue to 10.0.0.68).
 
