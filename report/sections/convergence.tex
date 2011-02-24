@@ -210,51 +210,60 @@ Picture~\ref{pic:olsr_convergence_time} and~\ref{pic:olsr_convergence_change}.
         \end{table}
 
 \subsection{Consideration}
+
 As can be easily seen by comparing Table~\ref{tab:convergence_batman}
-with Table~\ref{tab:convergence_olsr}, the two \emph{mesh} routing
-protocol have almost equivalent performances: both of them show a
-\emph{black out time} of circa 13 seconds. The results are so similar
+with Table~\ref{tab:convergence_olsr}, the two mesh protocols
+have almost equivalent performances: both show a
+\emph{black out time} of about 13 seconds.
+
+\begin{verbatim}
+Such a similarity in the
+results makes us think about a difference in the channel quality between
+tests, rather than an actual differences in the protocol quality.
+
+The results are so similar
 which we didn't find any important aspect which cannot be attributed
 to the mutated condition of the channel quality between tests.
+\end{verbatim}
 
 An interesting aspect which we discovered about both protocols is that
-they both employ a mechanism to discover missing paths, which goes
-beyond the simple (at least for \batman) general flow of the
-protocol.
+they employ a mechanism to discover missing paths, which goes
+beyond the simple general flow of the protocol.
 
-This is really easy to notice by looking at the output of \batman\ which
-we reported in Listing~\ref{lst:batman_log}. Here we see that the
-quality measure associated to node 10.0.0.66 (the one we marked with
-*) keep increasing until it goes abruptly to 0. Interestingly at that
-time such node was already down (the counter marked with § remains
-always the same).
+This is really easy to notice by looking at the output of \batman\ in
+Listing~\ref{lst:batman_log}: we see that the
+quality measure associated to node 10.0.0.66 (marked with a `*')
+keep increasing until it goes abruptly to 0 (in the last block).
+Interestingly at that
+time such node was already down (this can be deduced by the fact that the
+counter marked with `§' remains always the same).
 
 \begin{figure}[tbhp]
 \begin{Verbatim}[fontsize=\footnotesize]
 ...
  Originator  (#/255)         Nexthop [outgoingIF]:   Potential  nexthops ... [B.A.T.M.A.N. 0.3.2 ... ]
-10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
-10.0.0.67       (184)       10.0.0.66 [      eth1]:       10.0.0.66 (184*)       10.0.0.68 (138)
+10.0.0.66       (206)       10.0.0.66 [      eth1]:       10.0.0.66 (206§)      10.0.0.68 ( 97)
+10.0.0.67       (184)       10.0.0.66 [      eth1]:       10.0.0.66 (184*)      10.0.0.68 (138)
 10.0.0.68       (192)       10.0.0.68 [      eth1]:       10.0.0.68 (192)       10.0.0.66 (124)
 
   Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ... ]
-10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
-10.0.0.67       (184)       10.0.0.66 [      eth1]:       10.0.0.66 (184*)       10.0.0.68 (140)
+10.0.0.66       (206)       10.0.0.66 [      eth1]:       10.0.0.66 (206§)      10.0.0.68 ( 97)
+10.0.0.67       (184)       10.0.0.66 [      eth1]:       10.0.0.66 (184*)      10.0.0.68 (140)
 10.0.0.68       (199)       10.0.0.68 [      eth1]:       10.0.0.68 (199)       10.0.0.66 (126)
 
   Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ...]
-10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
-10.0.0.67       (185)       10.0.0.66 [      eth1]:       10.0.0.66 (185*)       10.0.0.68 (144)
+10.0.0.66       (206)       10.0.0.66 [      eth1]:       10.0.0.66 (206§)      10.0.0.68 ( 97)
+10.0.0.67       (185)       10.0.0.66 [      eth1]:       10.0.0.66 (185*)      10.0.0.68 (144)
 10.0.0.68       (202)       10.0.0.68 [      eth1]:       10.0.0.68 (202)       10.0.0.66 (126)
 
   Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ...]
-10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
-10.0.0.67       (186)       10.0.0.66 [      eth1]:       10.0.0.66 (186*)       10.0.0.68 (146)
+10.0.0.66       (206)       10.0.0.66 [      eth1]:       10.0.0.66 (206§)      10.0.0.68 ( 97)
+10.0.0.67       (186)       10.0.0.66 [      eth1]:       10.0.0.66 (186*)      10.0.0.68 (146)
 10.0.0.68       (207)       10.0.0.68 [      eth1]:       10.0.0.68 (207)       10.0.0.66 (  0)
 
   Originator  (#/255)         Nexthop [outgoingIF]:   Potential nexthops ... [B.A.T.M.A.N. 0.3.2 ...]
-10.0.0.66       (206§)       10.0.0.66 [      eth1]:       10.0.0.66 (206)       10.0.0.68 ( 97)
-10.0.0.67       (150)       10.0.0.68 [      eth1]:       10.0.0.66 (  0*)       10.0.0.68 (150)
+10.0.0.66       (206)       10.0.0.66 [      eth1]:       10.0.0.66 (206§)      10.0.0.68 ( 97)
+10.0.0.67       (150)       10.0.0.68 [      eth1]:       10.0.0.66 (  0*)      10.0.0.68 (150)
 10.0.0.68       (211)       10.0.0.68 [      eth1]:       10.0.0.68 (211)       10.0.0.66 (  0)
 ...
 \end{Verbatim}
@@ -262,7 +271,7 @@ always the same).
 \label{lst:batman_log}
 \end{figure}
 
-A similar thing happens also in \olsr\ the link to node 10.0.0.66 is
+A similar thing happens also in \olsr: the link to node 10.0.0.66 is
 maintained with a better quality measure but it is abruptly removed
 from the 2-hop list for node 10.0.0.67 (see Listings~\ref{lst:olsr_log}).
 
