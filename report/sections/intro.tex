@@ -1,28 +1,46 @@
-An interesting issue about \emph{meshed networks} is how they influence
-the network performances with respect to configurations in which routes are
-defined statically. The comparison we worked on takes in account
-\batman\cite{bib:BATMAN} and \olsr\cite{bib:OLSR}, both implementing mesh
-routing protocols.
+\emph{Mesh network} are a special kind of \emph{Ad-Hoc network}:
+usually they are more structured and tend to present semi-permanent
+nodes. However the structure of the network itself is not fixed. Nodes
+may join and leave and links between nodes may change during
+time. This peculiar characteristic requires a distributed routing
+strategy capable of handling such a scenario.
+
+There are two main family of protocols developed to handle routing in
+\emph{mesh networks}: \emph{pro-active} and \emph{reactive}.
+The former maintain fresh lists of destinations and their routes by
+periodically distributing routing tables throughout the network, the
+latter finds a route on demand by flooding the network with \emph{route
+request packets}.
+
+Thinking about the \emph{pro-active} family a couple of questions
+comes to our minds: how the overhead of the routing protocols
+affect the network performances and how long is the convergence time
+on the event of a sudden link removal?
+
+In this report we will analyze these aspects by showing a series of
+results we obtain by running a series of experiments on the
+\emph{mesh} routing protocols: \batman\cite{bib:BATMAN} and \olsr\cite{bib:OLSR}.
 
 \subsection{About \batman}
 
-    The \batman\ protocol is based on a proactive approach exploiting a
+    The \batman\ protocol is based on a \emph{pro-active} approach exploiting a
     flooding technique. Each host in a \batman\ mesh network produces, on a
     regular basis, an \emph{Originator Message} which is sent in
     broadcast and gets received by all directly reachable neighbors. Every
     \emph{Originator Message} contains, among other things, a
-    \emph{Sequence Number} and a \emph{TTL}.
+    \emph{Sequence Number} and a \emph{TTL} and it is used to
+    inform the network of the presence of the node.
 
     Each node keeps, for any destination host, a sliding window of
     recent sequence numbers. The window gets moved as new sequence numbers
     arrive, and this makes oldest sequence numbers obsolete. The preferred
-    route is given by the host having the maximum number of entries in the
-    sliding window.  So far, each packet contains only a few data, and
-    doesn't give any kind of information on how the routing table is
-    structured in the sender Originator.
+    route for a specific destination is given by the host having the
+    maximum number of entries in the sliding window for the specific
+    destination. That is the node which has forwarded, in the current
+    window,  the most number of \emph{Originator Messages} generated
+    by the destination.
 
-    The node is in charge of re-broadcasting a message from another node
-    if:
+    Any node is in charge of re-broadcasting an \emph{Originator Message} if:
     \begin{itemize}
     \item   The Sequence Number hasn't been seen yet;
     \item   The message's TTL hasn't been expired.
@@ -34,9 +52,9 @@ routing protocols.
 
 \subsection{About \olsr}
 
-    The protocol is far more complex than \batman, as it's best suited for
+    The protocol is far more complex than \batman and it's best suited for
     extended and complex networks. Such complexity boils down to
-    each host periodically sending of a part of the \emph{link-state}
+    each host periodically sending a portion of the local \emph{link-state}
     table. The details are beyond the purposes of this report, since
     they're not affecting that much the actual network interaction. What
     really concerns us is the software timing:
@@ -52,12 +70,11 @@ routing protocols.
     \end{itemize}
 
 \subsection{Experiments with meshed networks}
-
-    The comparison has been achieved by means of two different classes
-    of tests: the first one aims to measure the worsening of the network
-    performance due to the two protocols, the second one tests how
-    responsive are the protocols with respect to changes in the
-    network topology.
+    As briefly stated above we've executed two kind of tests: the
+    first one aims to measure the worsening of the network
+    performance in presence of routing protocols w.r.t. a static
+    routing configuration while the second measure how
+    responsive are the protocols to changes in the network topology.
 
     The needed data has been retrieved by using some tools:
     \begin{itemize}
@@ -68,11 +85,12 @@ routing protocols.
     \item   Statistics about protocol responsiveness for \batman\ and
             \olsr\ have been extrapolated by parsing the output of the
             two softwares respectively.
+     \item Complementary data has been extrapolated by the
+       \emph{Whireshark} logs
     \end{itemize}
 
 \subsection{The testbed}
-
-    The testbed has been composed by four laptops equipped with
+   The testbed has been composed by four laptops equipped with
     \emph{Ubuntu 10.10 GNU/Linux} operating systems. We used the following
     softwares:
     \begin{description}
@@ -86,4 +104,3 @@ routing protocols.
     Depending on the tests, the network topologies have been arranged
     specifically, so far each section of this report will be provided with
     a paragraph describing it.
-
