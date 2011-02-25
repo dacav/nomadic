@@ -65,7 +65,7 @@ which the \emph{source} wasn't able to communicate with the
 to collect this information, but we also wanted to give some indication
 on the throughput before and after the route changed. As already
 mentioned, however, \netperf\ is not the most stable software in the
-world: most of the times it didn't manage to resume the packet flow after
+world: oftentimes it didn't manage to resume the packet flow after
 the route change happened, while in the same situation \emph{ping} worked
 fine. To circumvent this problem we let \netperf\ perform
 an alternative kind of test which measured the number of transaction
@@ -77,8 +77,9 @@ the instant in which the route was actually changed.
 
 A problem we had to face was how to force node 10.0.0.66 to be the
 preferred route. With \olsr\ we exploited a configuration parameter
-which allows to penalize a route with a multiplicative factor on it's
-quality. We used a degradation factor of 0.8:
+which allows to manually alter a link quality by a multiplicative
+factor. We chose a factor of $0.8$ to slightly penalize node 10.0.0.68
+without unbalancing too much the links:
 
 \begin{verbatim}
 LinkQualityMult 10.0.0.68 0.8
@@ -107,9 +108,9 @@ In this section we present the result we obtained for
 \batman. Picture~\ref{pic:batman_convergence} shows a summary of the
 entire test whereas Picture~\ref{pic:batman_convergence_time}
 and Picture~\ref{pic:batman_convergence_change} show the respectively the
-details of the convergence time and the route change instant.  Finally all
-the relative statistics are reported in
-Table~\ref{tab:convergence_batman}.
+details of the convergence time and the route change instant. All the relevant
+statistic about the former two are reported (relative to the
+\emph{preferred route} kill time: second 40) in table \ref{tab:convergence_batman}.
 
 The 3 vertical dashed lines represent, from left to right, the start of
 the \netperf\ measurement, the forced removal of node 10.0.0.66 and the
@@ -156,18 +157,22 @@ blue to 10.0.0.68).
             Route change & 11.655 & 0.234 & 10.635 & 11.317 & 11.775 & 11.926 & 12.574\\
             \bottomrule
             \end{tabular}
-            \caption{Statistics on the convergence anche route change
-              instants of \batman.}
+            \caption{Statistics on the convergence and route change
+              instants of \batman\ relative to the \emph{preferred
+                route} kill time (i.e. second 40).}
             \label{tab:convergence_batman}
         \end{table}
 
 \clearpage
 \subsection{\olsr}
-In this section are included the result for \olsr.
+In this section are included the result for \olsr (see previous
+subseciton for a description of the plot).
 In Picture~\ref{pic:olsr_convergence} is shown the summary of our
 test. A zoomed view of the convergence instant and next-hop change
 instant is reported respectively in
-Picture~\ref{pic:olsr_convergence_time} and~\ref{pic:olsr_convergence_change}.
+Picture~\ref{pic:olsr_convergence_time}
+and~\ref{pic:olsr_convergence_change}.
+
 
   \Picture{images/convergence_olsr_plot}
                {\textwidth}
@@ -204,9 +209,10 @@ Picture~\ref{pic:olsr_convergence_time} and~\ref{pic:olsr_convergence_change}.
             Route change & 11.460 & 0.262 & 10.627 & 11.028 & 11.131 &11.827 & 12.238 \\
             \bottomrule
             \end{tabular}
-           \caption{Statistics on the convergence anche route change
-              instants of \olsr.}
-            \label{tab:convergence_olsr}
+            \caption{Statistics on the convergence and route change
+              instants of \olsr\ relative to the \emph{preferred
+                route} kill time (i.e. second 40).}
+           \label{tab:convergence_olsr}
         \end{table}
 
 \subsection{Consideration}
