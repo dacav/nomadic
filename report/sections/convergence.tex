@@ -1,49 +1,52 @@
 \subsection{Test Introduction}
-Given we are working in a \emph{mesh} network, in which nodes may join
-and leave frequently and without coordination, an interesting problem
-is how the routing protocol handles the sudden loss of one of its
-routes. From the point of view of a user the most important factor in
-this scenario is the time window in which he is cut off from the
-network.
 
-This is the rationale behind the following test in which we measured the
-convergence time of \batman\ and \olsr\ when subjected to a forced
-link removal.
+    As we are working with a mesh network, in which nodes may join
+    and leave frequently and without coordination, an interesting problem
+    is how the routing protocol handles the sudden loss of one of its
+    routes. From the user point of view the most important factor in this
+    scenario is the length of the period in which the network is down.
+
+    That's the rationale behind the following test, in which we measured
+    the convergence time of \batman\ and \olsr\ when subjected to a forced
+    link removal.
 
 \subsection{Topology}
- The topology of the network is the one depicted in
-Picture~\ref{pic:LayoutConvergence} . The laptops are disposed in a
-diamond shaped topology with the \emph{source} and \emph{sink} nodes
-at the boundaries. The node 10.0.0.66 acts as \emph{preferred} path
-from the \emph{source} to the \emph{sink}, while the host 10.0.0.68 works
-as \emph{auxiliary} node, to be chosen when the primary route falls.
 
-\Picture{images/convergence}
-        {.90\columnwidth}
-        {Configuration with single direct link}
-        {pic:LayoutConvergence}
+    The topology of the network is the one depicted in
+    Picture~\ref{pic:LayoutConvergence}. The laptops are disposed in a
+    diamond shaped topology, with a \emph{Source} and \emph{Sink} nodes
+    which can be reached each other through two possible routes.
 
-The \emph{iptables} configuration we use to setup such a topology is
-the following:
+    The node 10.0.0.66 acts as \emph{Primary} path from the \emph{Source}
+    to the \emph{Sink}, while the host 10.0.0.68 works as \emph{Auxiliary}
+    node, to be chosen when the primary route falls.
 
-\begin{itemize}
-\item On 10.0.0.65 (source):
+    \Picture{images/convergence}
+            {.90\columnwidth}
+            {Configuration with single direct link}
+            {pic:LayoutConvergence}
+
+    \noindent The \emph{Iptables} configuration we use to setup such a topology is
+    the following:
+
+    \begin{itemize}
+    \item On 10.0.0.65 (\emph{Source}):
 
 \begin{verbatim}
 iptables -A INPUT -m mac --mac-source $(sinkMAC) -j DROP;
 \end{verbatim}
 
-\item On 10.0.0.66 (preferred)
+    \item On 10.0.0.66 (\emph{Preferred})
 \begin{verbatim}
 iptables -A INPUT -m mac --mac-source $(preferredMAC) -j DROP;
 \end{verbatim}
 
-\item On 10.0.0.68 (auxiliary)
+    \item On 10.0.0.68 (\emph{Auxiliary})
 \begin{verbatim}
 iptables -A INPUT -m mac --mac-source $(secondaryMAC) -j DROP;
 \end{verbatim}
 
-\item On 10.0.0.67 (sink)
+    \item On 10.0.0.67 (\emph{Sink})
 \begin{verbatim}
 iptables -A INPUT -m mac --mac-source $(sourceMAC) -j DROP;
 \end{verbatim}
@@ -60,8 +63,8 @@ iptables -A INPUT -m mac --mac-source $(sourceMAC) -j DROP;
 The phases of a single iteration of the experiment are shown in
 Picture~\ref{pic:ConvergenceTiming}.
 We used the result of \netperf\ to measure the time window in
-which the \emph{source} wasn't able to communicate with the
-\emph{sink}. We could have simplified our lives by just using \emph{ping}
+which the \emph{Source} wasn't able to communicate with the
+\emph{Sink}. We could have simplified our lives by just using \emph{ping}
 to collect this information, but we also wanted to give some indication
 on the throughput before and after the route changed. As already
 mentioned, however, \netperf\ is not the most stable software in the
@@ -117,7 +120,7 @@ the \netperf\ measurement, the forced removal of node 10.0.0.66 and the
 average convergence time. The red dots indicate all the single
 transaction per second data point. Finally the upper horizontal line
 shows
-the route used by the source (where green corresponds to 10.0.0.66 and
+the route used by the \emph{Source} (where green corresponds to 10.0.0.66 and
 blue to 10.0.0.68).
 
     \Picture{images/convergence_batman_plot}

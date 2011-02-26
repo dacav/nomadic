@@ -13,7 +13,11 @@ THROUG = r'^Interim result: *({0}) .*bits/s over ({0}) seconds'
 # Regex for netperf's transactions
 TRANS = r'^Interim result:\s*({0}) Trans/s over ({0}) seconds'
 
+# Regex for timing
+TIMING = r'^.*({0}) seconds$'
+
 THROUGHPUT_PATTERN = re.compile('^.* +({0}) *$'.format(FLOAT))
+TIMING_PATTERN = re.compile(TIMING.format(FLOAT))
 
 BY_THROUGHPUT, BY_TRANSACTIONS = xrange(2)
 
@@ -86,7 +90,14 @@ class NetperfParser:
     def get_throughput (self):
         for row in self.f: pass
         return float(re.match(THROUGHPUT_PATTERN, row).groups()[0])
-        
+
+    def iter_timing (self):
+        for row in self.f:
+            try:
+                yield re.match(TIMING_PATTERN, row).group(1)
+            except:
+                pass
+
 def throughput_of (fn):
     ret = NetperfParser(fn).get_throughput()
     return ret

@@ -11,11 +11,11 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="341.88248"
-   height="144.34421"
+   height="154.51999"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.0 r9654"
-   sodipodi:docname="direct.pdf">
+   sodipodi:docname="direct.svg">
   <defs
      id="defs4">
     <marker
@@ -494,20 +494,20 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.90509668"
-     inkscape:cx="152.19984"
-     inkscape:cy="131.38777"
+     inkscape:zoom="1.8101934"
+     inkscape:cx="127.75697"
+     inkscape:cy="123.81487"
      inkscape:document-units="px"
-     inkscape:current-layer="g2565"
+     inkscape:current-layer="g14031"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1280"
-     inkscape:window-height="730"
+     inkscape:window-height="728"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="25"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -517,7 +517,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -525,7 +525,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-70.744118,-220.78382)">
+     transform="translate(-70.744118,-210.60804)">
     <g
        id="layer1-4"
        inkscape:label="Layer 1"
@@ -2152,13 +2152,18 @@
                xml:space="preserve"
                style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
                x="-214.3976"
-               y="-198.56577"
+               y="-208.56577"
                id="text10402"
                sodipodi:linespacing="125%"><tspan
                  sodipodi:role="line"
                  x="-214.3976"
-                 y="-198.56577"
-                 id="tspan10406">10.0.0.65</tspan></text>
+                 y="-208.56577"
+                 id="tspan10406"
+                 style="font-style:italic">Source</tspan><tspan
+                 sodipodi:role="line"
+                 x="-214.3976"
+                 y="-196.06577"
+                 id="tspan7470">10.0.0.65</tspan></text>
           </g>
           <g
              id="g14031">
@@ -3769,16 +3774,21 @@
                xml:space="preserve"
                style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
                x="19.510725"
-               y="-198.56577"
+               y="-208.56577"
                id="text10402-1"
                sodipodi:linespacing="125%"><tspan
                  sodipodi:role="line"
                  x="19.510725"
-                 y="-198.56577"
-                 id="tspan10406-5">10.0.0.67</tspan><tspan
+                 y="-208.56577"
+                 id="tspan10406-5"
+                 style="font-style:italic">Sink</tspan><tspan
                  sodipodi:role="line"
                  x="19.510725"
-                 y="-186.06577"
+                 y="-196.06577"
+                 id="tspan7472">10.0.0.67</tspan><tspan
+                 sodipodi:role="line"
+                 x="19.510725"
+                 y="-183.56577"
                  id="tspan12824" /></text>
           </g>
         </g>

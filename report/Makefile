@@ -8,10 +8,10 @@ all: $(PDF)
 
 index: all
 	pdflatex $(TEX) 2> /dev/null
-	pdflatex $(TEX) 2> /dev/null
+	pdflatex $(TEX) &> /dev/null
 
 $(PDF) : $(TEX) $(SUBTEXS)
-	pdflatex $(TEX)
+	pdflatex $(TEX) 2> /dev/null
 
 clean:
 	rm -f $(PDF) *.aux *.log *.out *.toc
