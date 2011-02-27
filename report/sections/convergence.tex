@@ -13,7 +13,7 @@
 \subsection{Topology}
 
     The topology of the network is the one depicted in
-    Picture~\ref{pic:LayoutConvergence}. The laptops are disposed in a
+    Figure~\ref{pic:LayoutConvergence}. The laptops are disposed in a
     diamond shaped topology, with a \emph{Source} and \emph{Sink} nodes
     which can be reached each other through two possible routes.
 
@@ -60,74 +60,72 @@ iptables -A INPUT -m mac --mac-source $(sourceMAC) -j DROP;
         {pic:ConvergenceTiming}
 
 
-The phases of a single iteration of the experiment are shown in
-Picture~\ref{pic:ConvergenceTiming}.
-We used the result of \netperf\ to measure the time window in
-which the \emph{Source} wasn't able to communicate with the
-\emph{Sink}. We could have simplified our lives by just using \emph{ping}
-to collect this information, but we also wanted to give some indication
-on the throughput before and after the route changed. As already
-mentioned, however, \netperf\ is not the most stable software in the
-world: oftentimes it didn't manage to resume the packet flow after
-the route change happened, while in the same situation \emph{ping} worked
-fine. To circumvent this problem we let \netperf\ perform
-an alternative kind of test which measured the number of transaction
-per second (with a transaction being characterized as an exchange of a
-single request and a single response).
-We then combined this information with the data gathered
-by \emph{Wireshark} and the log of the routing protocol to extrapolate
-the instant in which the route was actually changed.
+    The phases of a single iteration of the experiment are shown in
+    Figure~\ref{pic:ConvergenceTiming}.  We used the result of \netperf\
+    to measure the time window in which the \emph{Source} wasn't able to
+    communicate with the \emph{Sink}. We could have simplified our lives
+    by just using \emph{ping} to collect this information, but we also
+    wanted to give some indication on the throughput before and after the
+    route changed. As already mentioned, however, \netperf\ is not the
+    most stable software in the world: oftentimes it didn't manage to
+    resume the packet flow after the route change happened, while in the
+    same situation \emph{ping} worked fine. To circumvent this problem we
+    let \netperf\ perform an alternative kind of test which measured the
+    number of transaction per second (with a transaction being
+    characterized as an exchange of a single request and a single
+    response).  We then combined this information with the data gathered
+    by \emph{Wireshark} and the log of the routing protocol to extrapolate
+    the instant in which the route was actually changed.
 
-A problem we had to face was how to force node 10.0.0.66 to be the
-preferred route. With \olsr\ we exploited a configuration parameter
-which allows to manually alter a link quality by a multiplicative
-factor. We chose a factor of $0.8$ to slightly penalize node 10.0.0.68
-without unbalancing too much the links:
+    A problem we had to face was how to force node 10.0.0.66 to be the
+    preferred route. With \olsr\ we exploited a configuration parameter
+    which allows to manually alter a link quality by a multiplicative
+    factor. We chose a factor of $0.8$ to slightly penalize node 10.0.0.68
+    without unbalancing too much the links:
 
 \begin{verbatim}
 LinkQualityMult 10.0.0.68 0.8
 \end{verbatim}
 
-\batman, on the other hand proved itself to be more problematic. After a
-long search
-we were unable to find a \emph{clean} way of dealing with this
-matter. We then decided to address the problem from another perspective.
-At first we thought about using an \emph{iptables} rule to impose a
-limit on the number of packets sent by the auxiliary host. This choice
-however is very intrusive: besides taming the mesh protocol, it
-could have had other unforeseeable repercussions on the result of our
-test.
+    Doing the same with \batman, on the other hand was more problematic.
+    After a long search we were unable to find a \emph{clean} way of
+    dealing with this matter. We decided to address the problem from
+    another perspective.  At first we thought about using an
+    \emph{Iptables} rule to impose a limit on the number of packets sent
+    by the auxiliary host. This choice however is very intrusive: besides
+    taming the mesh protocol, it could have had other unforeseeable
+    repercussions on the result of our test.
 
-In the end we exploited our understanding of the protocol to \emph{game
-it}: we started the \batman\ daemon on node 10.0.0.68 with 5 seconds
-delay. Thanks to the limited duration of our experiment and to the sliding
-window mechanism (described in Section~\ref{sec:Intro}) we were reasonably
-certain that the preferred route would have passed through the node
-10.0.0.66. The protocol's log and the recordings of \emph{Wireshark}
-proved this consideration to be correct.
+    In the end we exploited our understanding of the protocol to
+    \emph{game it}: we started the \batman\ daemon on node 10.0.0.68 with
+    5 seconds delay. Thanks to the limited duration of our experiment and
+    to the sliding window mechanism (described in Section~\ref{sec:Intro})
+    we were reasonably certain that the preferred route would have passed
+    through the node 10.0.0.66. The protocol's log and the recordings of
+    \emph{Wireshark} proved this consideration to be correct.
 
 \subsection{\batman}
-In this section we present the result we obtained for
-\batman. Picture~\ref{pic:batman_convergence} shows a summary of the
-entire test whereas Picture~\ref{pic:batman_convergence_time}
-and Picture~\ref{pic:batman_convergence_change} show the respectively the
-details of the convergence time and the route change instant. All the relevant
-statistic about the former two are reported (relative to the
-\emph{preferred route} kill time: second 40) in table \ref{tab:convergence_batman}.
 
-The 3 vertical dashed lines represent, from left to right, the start of
-the \netperf\ measurement, the forced removal of node 10.0.0.66 and the
-average convergence time. The red dots indicate all the single
-transaction per second data point. Finally the upper horizontal line
-shows
-the route used by the \emph{Source} (where green corresponds to 10.0.0.66 and
-blue to 10.0.0.68).
+    This section shows the result we obtained for \batman.
+    Figure~\ref{pic:batman_convergence} shows a summary of the entire
+    test whereas Figure~\ref{pic:batman_convergence_time} and
+    Figure~\ref{pic:batman_convergence_change} show respectively the
+    details of the convergence time and the route change instant. The
+    numerical statistics corresponding to the graphical representation can
+    be found in Table~\ref{tab:convergence_batman}.
+
+    The 3 vertical dashed lines in the picture represent, from left to
+    right, the start of the \netperf\ measurement, the forced removal of
+    node 10.0.0.66 and the average convergence time. The red dots indicate
+    all the single transactions per second data point. Finally the upper
+    horizontal line shows the route used for the communication: the green
+    segment corresponds to 10.0.0.66, while the blue one corresponds to
+    10.0.0.68.
 
     \Picture{images/convergence_batman_plot}
             {\textwidth}
             {Convergence plot while using \batman\ as routing protocol}
             {pic:batman_convergence}
-
 
 \begin{figure}[bhtp]
   \begin{minipage}[b]{0.5\linewidth}
@@ -167,21 +165,20 @@ blue to 10.0.0.68).
             \label{tab:convergence_batman}
         \end{table}
 
-\clearpage
 \subsection{\olsr}
-In this section are included the result for \olsr (see previous
-subseciton for a description of the plot).
-In Picture~\ref{pic:olsr_convergence} is shown the summary of our
-test. A zoomed view of the convergence instant and next-hop change
-instant is reported respectively in
-Picture~\ref{pic:olsr_convergence_time}
-and~\ref{pic:olsr_convergence_change}.
 
+    This subsection shows for \olsr\ the same kind of result shown in the
+    previous subsection for \batman.  Figure~\ref{pic:olsr_convergence}
+    represents the summary of our tests as in
+    Figure~\ref{pic:batman_convergence}. A detailed view of the
+    convergence instant and next-hop change instant is reported
+    respectively in Figure~\ref{pic:olsr_convergence_time} and
+    Figure~\ref{pic:olsr_convergence_change}.
 
-  \Picture{images/convergence_olsr_plot}
-               {\textwidth}
-               {Convergence plot while using \olsr\ as routing protocol}
-               {pic:olsr_convergence}
+    \Picture{images/convergence_olsr_plot}
+            {\textwidth}
+            {Convergence plot while using \olsr\ as routing protocol}
+            {pic:olsr_convergence}
 
 \begin{figure}[bhtp]
   \begin{minipage}[b]{0.5\linewidth}
@@ -219,43 +216,45 @@ and~\ref{pic:olsr_convergence_change}.
            \label{tab:convergence_olsr}
         \end{table}
 
-\subsection{Considerations}
+\subsection{Considerations about Convergence Time}
 
-As can be easily seen by comparing Table~\ref{tab:convergence_batman}
-with Table~\ref{tab:convergence_olsr}, the two mesh protocols
-have almost equivalent performances: both show a
-\emph{black out time} of about 13 seconds.
+    As can be easily seen by comparing Table~\ref{tab:convergence_batman}
+    with Table~\ref{tab:convergence_olsr}, the two mesh protocols
+    have almost equivalent performances: both show a
+    \emph{black out time} of about 13 seconds.
 
-%Such a similarity in the
-%results makes us think about a difference in the channel quality between
-%tests, rather than an actual differences in the protocol quality.
-%
-%The results are so similar
-%which we didn't find any important aspect which cannot be attributed
-%to the mutated condition of the channel quality between tests.
+    %Such a similarity in the
+    %results makes us think about a difference in the channel quality between
+    %tests, rather than an actual differences in the protocol quality.
+    %
+    %The results are so similar
+    %which we didn't find any important aspect which cannot be attributed
+    %to the mutated condition of the channel quality between tests.
 
-An interesting aspect which we discovered about both protocols is that
-they employ a mechanism to discover missing paths, which goes
-beyond the simple general flow of the protocol.
+    An interesting aspect which we discovered about both protocols is that
+    they employ a mechanism to discover missing paths, which goes
+    beyond the simple general flow of the protocol.
 
-This can easily be noticed by considering the behavior of \batman, which
-is pretty simple to understand. The size of the sliding windows we
-mentioned in Section~\ref{sec:Intro} here is relevant: the default size
-value is 127 entries, and each experiment ran for 70 seconds. Each node
-sends an \emph{Originator Message} per second, thus in this context:
-\begin{itemize}
-\item   The preference about the route only depends on how long each host
-        has been working;
-\item   The quality of each node keeps increasing.
-\end{itemize}
+    This can easily be noticed by considering the behavior of \batman, which
+    is pretty simple to understand. The size of the sliding windows we
+    mentioned in Section~\ref{sec:Intro} here is relevant: the default size
+    value is 127 entries, and each experiment ran for 70 seconds. Each node
+    sends an \emph{Originator Message} per second, thus in this context:
+    \begin{itemize}
+    \item   The preference about the route only depends on how long each host
+            has been working;
+    \item   The quality of each node keeps increasing.
+    \end{itemize}
 
-The output of \batman\ in Listing~\ref{lst:batman_log} shows a time
-interval in which the primary route is already down (the first row
-of each block keep showing the same quality index for 10.0.0.66).
-The second row of each block is about the destination (10.0.0.67) and,
-despite the node is not working, the quality measure of 10.0.0.66 keeps
-increasing. We would expect it dwindling to 0, while actually this
-happens abruptly in the last block.
+    Listing~\ref{lst:batman_log} shows the output of \batman\ during a
+    time interval in which the primary route is already down: the first
+    row of each block keep showing the same quality index for the primary
+    route (10.0.0.66).
+
+    In each block the second row is about the \emph{Sink} node
+    (10.0.0.67), and despite the node is not working, the quality measure
+    of the primary route keeps increasing. We would expect it dwindling to
+    0, while actually this happens abruptly in the last block.
 
 \begin{figure}[tbhp]
 \begin{Verbatim}[fontsize=\footnotesize]
@@ -290,18 +289,18 @@ happens abruptly in the last block.
 \label{lst:batman_log}
 \end{figure}
 
-This unexpected behavior implies a relevant fact: the convergence time
-depends only partially on the quality of the network transmission, since
-the protocol is able to detect network failures.
+    This unexpected behavior implies a relevant fact: the convergence time
+    depends only partially on the quality of the network transmission, since
+    the protocol is able to detect network failures.
 
-Even if the complexity of \olsr\ discourages us from trying to analyze in
-depth its behavior, we noticed that it works similarly.
-Listing~\ref{lst:olsr_log} shows, in fact, how the link to node 10.0.0.66 is
-is abruptly removed from the 2-hop list for node (in the last block the
-entry is no longer present), despite it's maintained with a quality
-measure\footnote{A \emph{ETX} value of 1 identifies a perfect
-transmission, while higher values identify worst channels} which is better
-with respect to the newly chosen route.
+    Even if the complexity of \olsr\ discourages us from trying to analyze in
+    depth its behavior, we noticed that it works similarly.
+    Listing~\ref{lst:olsr_log} shows, in fact, how the link to node 10.0.0.66 is
+    is abruptly removed from the 2-hop list for node (in the last block the
+    entry is no longer present), despite it's maintained with a quality
+    measure\footnote{A \emph{ETX} value of 1 identifies a perfect
+    transmission, while higher values identify worst channels} which is better
+    with respect to the newly chosen route.
 
 \begin{figure}[tbhp]
 \begin{Verbatim}[fontsize=\footnotesize]
