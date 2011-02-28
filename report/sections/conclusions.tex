@@ -1,13 +1,14 @@
 Our experiments gave us a positive opinion about both the analyzed
 protocols. They are obviously able to make the mesh network work in a
-sound way, but also without a perceptible impact on the transmission
-quality, since the worsening of both latency and throughput are
-negligible.
+sound way and also without a perceptible impact on the transmission
+quality: the worsening of both latency and throughput are
+negligible. That said however we weren't able to simulate a complex scenario
+which would have emphatized their weakness: the number of nodes we
+employed was just too small.
 
-Of course, our considerations take care only of the technical aspects of
-the context. It's clear that using a mesh network is not a pleasant
-experience from the point of view of the user, who basically appreciates
-smoothness. We saw, in fact, that the performance worsening is much more
-bounded to the different topologies rather than the traffic related to the
-protocol; the topology however is indirectly influenced by the protocol
-data by means of the software.
+As a final remark, our impression was that \batman\ seems to be more
+stable and overall shows more constant performances. This is probably
+due to its simpler structure w.r.t. \olsr. However this consideration
+may be influenced by the fact that our testbed is quite simple too. A
+more complex configuration might work in favor of \olsr\ which is
+designed to work on such topologies.

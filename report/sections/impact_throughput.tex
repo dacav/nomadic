@@ -21,8 +21,8 @@
     situation} to be used as term of comparison.
 
     For each combination of network topology and routing protocol, we
-    executed 10 consecutive \netperf\ each of which delayed by 10 seconds
-    from the previous one. Each run lasted 60 seconds and was performed by
+    executed 10 consecutive \netperf\ measurement, each one delayed by 10 seconds
+    from the previous. Each run lasted 60 seconds and was performed by
     running the following command on the \emph{source} machine (10.0.0.65):
 \begin{verbatim}
 netperf -H 10.0.0.67 -D 1 -l 60
@@ -98,7 +98,7 @@ netperf -H 10.0.0.67 -D 1 -l 60
 
     \subsubsection{Topology}
 
-        The \emph{1 hop} topology is composed by a 3 computer arranged
+        The \emph{1 hop} topology is composed by 3 computer arranged
         in a chain (see Figure~\ref{pic:Layout1Hop}):
         \begin{itemize}
         \item   The \emph{Source} node (address 10.0.0.65);
@@ -147,7 +147,7 @@ iptables -A INPUT -m mac --mac-source $(sourceMAC) -j DROP;
         (see Paragraph~\ref{subsec:2hop}), in which intuitively the
         interference should be much more detectable. At any rate, we report
         the obtained experimental data.
-      
+
         \Picture{images/throughput_plot_1hop}
                 {0.7 \columnwidth}
                 {Impact of the meshing protocols on the throughput of the
@@ -287,9 +287,8 @@ iptables -A INPUT -m mac --mac-source $(hop1MAC) -j DROP;
     \emph{static routes} as well, however the degradation was never so
     dramatic.
 
-    Since this weird behavior regards the whole single experiment, the
-    amount of data we collected is not nearly sufficient to be
-    statistically meaningful: we cannot say for sure if this
+    The amount of data we collected on this issue however is not
+    nearly sufficient to be statistically meaningful: we cannot say for sure if this
     is to be attributed to the routing protocol or to \netperf\ (which
     proved itself not so stable in other situations). Anyhow we
     think this fact is worth mentioning and could be purposely analyzed

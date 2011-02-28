@@ -36,14 +36,14 @@
 iptables -A INPUT -m mac --mac-source $(sinkMAC) -j DROP;
 \end{verbatim}
 
-    \item On 10.0.0.66 (\emph{Preferred})
+    \item On 10.0.0.66 (\emph{Primary})
 \begin{verbatim}
-iptables -A INPUT -m mac --mac-source $(preferredMAC) -j DROP;
+iptables -A INPUT -m mac --mac-source $(auxiliaryMAC) -j DROP;
 \end{verbatim}
 
     \item On 10.0.0.68 (\emph{Auxiliary})
 \begin{verbatim}
-iptables -A INPUT -m mac --mac-source $(secondaryMAC) -j DROP;
+iptables -A INPUT -m mac --mac-source $(primaryMAC) -j DROP;
 \end{verbatim}
 
     \item On 10.0.0.67 (\emph{Sink})
