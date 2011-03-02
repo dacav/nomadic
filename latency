@@ -1,34 +1,42 @@
 #!/usr/bin/env python
 '''
 \x1b[1mUsage:\x1b[0m
-    {0} <t0> <t1> ... <tn>
-    Where <t0>, <t1>, ... <tn> are latency files (the trivial standard
-    output of the 'ping' program redirected on a file). You must provide
-    at least one latency file.
 
-\x1b[1mInformation:\x1b[0m
-    Builds a gnuplot-compatible list of throughputs basing on the input
-    files.
+    {0} <l0> [<l1> ...]
 
-\x1b[1mNote:\x1b[0m
-    The program writes on stdout the plotting request for gnuplot. Try to
-    launch like this:
-        {0} <params> | gnuplot -persist
+    Where <l0>, <l1> ... are the names of "latency" files (i.e. ping
+    outputs redirected on a file).
 
 '''
 
 import sys
-import pingparser
+from pingparser import PingParser
 import utils
 
 from itertools import izip as zip, \
-                      count, islice
-def build_data (*files):
-    for fn, f in files:
-        times = list(pingparser.PingParser(f))
-        avg = utils.average(times)
-        yield fn, avg, utils.variance(times, avg), \
-              utils.quartiles(times), min(times), max(times)
+                      imap as map, \
+                      izip_longest as zipl, \
+                      count, \
+                      islice
+
+import matplotlib.pyplot as plt
+
+class BoxPlotter :
+
+    def __init__ (self, exps):
+        exps_files = list(map(lambda fn : (fn, open(fn, 'rt')), exps))
+        self.parsers = map(lambda (fn, fd) : PingParser(fd), exps_files)
+        self.files = exps_files
+
+    def show (self):
+        plt.boxplot(tuple(map(list, self.parsers)), sym='')
+        plt.setp(plt.gca(), 'xticklabels', list(map(lambda (fn, fd) : fn,
+                                                    self.files)))
+        plt.show()
+
+    def __del__ (self):
+        for fn, f in self.files:
+            f.close()
 
 def main (argv=None):
     if not argv: argv = sys.argv
@@ -38,16 +46,7 @@ def main (argv=None):
         sys.stderr.write(__doc__.format(progname))
         return 1
 
-    files = map(lambda fn : (fn, open(fn, 'rt')), argv)
-    for fn, avg, var, quarts, vmin, vmax in build_data(*files):
-        print 'File:', fn
-        print 'Average:', avg
-        print 'Variance:', var
-        print 'Quarts:', quarts
-        print 'Min:', vmin
-        print 'Max:', vmax
-
-    for f in files: f[1].close()
+    BoxPlotter(argv).show()
 
     return 0
 
